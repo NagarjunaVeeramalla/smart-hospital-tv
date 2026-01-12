@@ -1,0 +1,99 @@
+/build
+# ======================
+# Android Studio / IntelliJ
+# ======================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ======================
+# Gradle
+# ======================
+.gradle/
+build/
+**/build/
+
+# ======================
+# Local configuration
+# ======================
+local.properties
+sdk.dir
+ndk.dir
+
+# ======================
+# OS files
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# Logs
+# ======================
+*.log
+
+# ======================
+# Keystore files (IMPORTANT)
+# ======================
+*.jks
+*.keystore
+
+# ======================
+# External native build
+# ======================
+.externalNativeBuild/
+.cxx/
+
+# ======================
+# Generated files
+# ======================
+captures/
+generated/
+bin/
+out/
+
+# ======================
+# Firebase / Google Services
+# ======================
+google-services.json
+*.gserviceaccount
+
+# ======================
+# Fastlane
+# ======================
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# ======================
+# Android profiling
+# ======================
+*.hprof
+
+# ======================
+# Kotlin
+# ======================
+*.kotlin_module
+
+# ======================
+# Compose
+# ======================
+.compose/
+
+# ======================
+# Secrets / Env
+# ======================
+.env
+.env.*
+
+# ======================
+# VS Code (if used)
+# ======================
+.vscode/
+
+# ======================
+# Temporary files
+# ======================
+*.tmp
+*.swp
