@@ -163,13 +163,30 @@ class HospitalDashboardViewModel : ViewModel() {
 
             generalInfo = listOf(
                 HospitalDataModel.GeneralInfo(
-                    title = "Pain Level",
-                    values = listOf("7/10", "Hurts Even More"),
+                    title = "Current Pain Rating",
+                    values = listOf(
+                        "4/10",
+                        "https://farm9.staticflickr.com/8295/8007075227_dc958c1fe6_z_d.jpg",
+                        "Manageable Discomfort"
+                    ),
                     card = HospitalDataModel.Card(
-                        title = "Wong-Baker Pain Scale",
-                        description = "Pain rating scale used by care team.",
-                        imageUrl = "https://example.com/pain_scale.png"
+                        title = "Understanding the Pain Assessment Tool",
+                        description = "Our healthcare professionals employ the Wong-Baker scale to evaluate your comfort levels. Sharing an accurate rating helps us customize your pain management and therapeutic approach effectively.",
+                        imageUrl = "https://farm2.staticflickr.com/1449/24800673529_64272a66ec_z_d.jpg"
                     )
+                ),
+                HospitalDataModel.GeneralInfo(
+                    title = "Entry Details",
+                    values = listOf("Admitted on Nov 18, 2025 at 6:27 PM"),
+                    card = null
+                ),
+                HospitalDataModel.GeneralInfo(
+                    title = "Dietary Guidelines",
+                    values = listOf(
+                        "Restricted: NPO (Nothing by mouth)",
+                        "https://farm8.staticflickr.com/7377/9359257263_81b080a039_z_d.jpg"
+                    ),
+                    card = null
                 )
             ),
 

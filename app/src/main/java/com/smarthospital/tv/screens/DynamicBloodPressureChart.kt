@@ -4,8 +4,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,12 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
+import com.smarthospital.tv.R
 import com.smarthospital.tv.datamodels.BloodPressureReading
 import com.smarthospital.tv.ui.theme.VisionAppTheme
 
@@ -27,18 +32,18 @@ fun BloodPressureChart(
     readings: List<BloodPressureReading>
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.Start
     ) {
-
-        // Title
-        Text(
-            text = "Blood Pressure (mmHg)",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
+        // Chart Header
+        ChartHeader(
+            title = "Blood Pressure (mmHg)",
+            iconRes = R.mipmap.ic_launcher
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -47,6 +52,25 @@ fun BloodPressureChart(
         ) {
             readings.forEach { reading ->
                 BloodPressureBar(reading)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Time labels aligned with bars
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            readings.forEach { reading ->
+                Text(
+                    text = reading.time,
+                    fontSize = 10.sp,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Light,
+                    modifier = Modifier.width(40.dp), // Match bar container width for alignment
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
             }
         }
     }
@@ -58,14 +82,15 @@ fun BloodPressureBar(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
+        verticalArrangement = Arrangement.Bottom,
+        modifier = Modifier.width(40.dp)
     ) {
-
         // Systolic
         Text(
             text = reading.systolic.toString(),
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.White
         )
 
         Canvas(
@@ -73,31 +98,36 @@ fun BloodPressureBar(
                 .height(100.dp)
                 .width(24.dp)
         ) {
+            val radiusPx = 6.dp.toPx()
             val topY = 16.dp.toPx()
             val bottomY = size.height - 16.dp.toPx()
             val centerX = size.width / 2
 
+            val color = Color(0xFFFFC107) // yellow/orange
+
             // Top dot
             drawCircle(
-                color = Color(0xFFFFC107), // yellow
-                radius = 6.dp.toPx(),
-                center = Offset(centerX, topY)
+                color = color,
+                radius = radiusPx,
+                center = Offset(centerX, topY),
+                style = Stroke(width = 2.dp.toPx())
             )
 
-            // Line
+            // Line (adjusted to touch circumference)
             drawLine(
-                color = Color(0xFFFFC107),
-                start = Offset(centerX, topY),
-                end = Offset(centerX, bottomY),
+                color = color,
+                start = Offset(centerX, topY + radiusPx),
+                end = Offset(centerX, bottomY - radiusPx),
                 strokeWidth = 3.dp.toPx(),
                 cap = StrokeCap.Round
             )
 
             // Bottom dot
             drawCircle(
-                color = Color(0xFFFFC107),
-                radius = 6.dp.toPx(),
-                center = Offset(centerX, bottomY)
+                color = color,
+                radius = radiusPx,
+                center = Offset(centerX, bottomY),
+                style = Stroke(width = 2.dp.toPx())
             )
         }
 
@@ -107,25 +137,18 @@ fun BloodPressureBar(
             fontSize = 14.sp,
             color = Color.LightGray
         )
-
-        // Time
-        Text(
-            text = reading.time,
-            fontSize = 12.sp,
-            color = Color.Gray
-        )
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0xFF121212)
 @Composable
 fun BloodPressureChartPreview() {
     VisionAppTheme {
         BloodPressureChart(
             readings = listOf(
-                BloodPressureReading("8am", 140, 90),
-                BloodPressureReading("12pm", 130, 85),
-                BloodPressureReading("3pm", 120, 80)
+                BloodPressureReading("9am", 140, 95),
+                BloodPressureReading("12pm", 130, 90),
+                BloodPressureReading("3pm", 120, 95)
             )
         )
     }

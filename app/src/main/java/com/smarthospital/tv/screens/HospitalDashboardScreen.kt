@@ -16,12 +16,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.tv.foundation.lazy.list.TvLazyColumn
 import androidx.tv.material3.Text
 import com.smarthospital.tv.datamodels.HospitalDataModel
+import com.smarthospital.tv.ui.DashboardMode
 import com.smarthospital.tv.ui.HospitalUiState
 import com.smarthospital.tv.viewmodels.HospitalDashboardViewModel
 
 
 @Composable
-fun HospitalDashboardScreen(viewModel: HospitalDashboardViewModel = viewModel(), visionMode: String = "ED ONLY") {
+fun HospitalDashboardScreen(
+    viewModel: HospitalDashboardViewModel = viewModel(),
+    dashboardMode: DashboardMode = DashboardMode.EMERGENCY_DEPARTMENT
+) {
     val uiState by viewModel.myHealthUiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.getHospitalDashboardData()
@@ -33,7 +37,7 @@ fun HospitalDashboardScreen(viewModel: HospitalDashboardViewModel = viewModel(),
 
         is HospitalUiState.Success -> {
             val data = (uiState as HospitalUiState.Success).data
-            HospitalContent(data, visionMode)
+            HospitalContent(data, dashboardMode)
         }
 
         is HospitalUiState.Error -> {
@@ -44,7 +48,7 @@ fun HospitalDashboardScreen(viewModel: HospitalDashboardViewModel = viewModel(),
 
 
 @Composable
-fun HospitalContent(data: HospitalDataModel, visionMode: String) {
+fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
 
     TvLazyColumn(
         modifier = Modifier
@@ -67,10 +71,13 @@ fun HospitalContent(data: HospitalDataModel, visionMode: String) {
             )
         }
 
-        if (visionMode == "Ed Only") {
+        if (dashboardMode == DashboardMode.EMERGENCY_DEPARTMENT) {
             item {
                 HospitalDashboardItem(title = "General Info") {
-                    GeneralInfoRow(data.generalInfo!!)
+                    GeneralInfoRow(
+                        data = data.generalInfo!!,
+                        onInfoClick = { /* Handle info click */ }
+                    )
                 }
             }
             item {
@@ -86,7 +93,10 @@ fun HospitalContent(data: HospitalDataModel, visionMode: String) {
         } else {
             item {
                 HospitalDashboardItem(title = "Vitals") {
-                    VitalsRow(vitals = data.vitalSigns!!)
+                    VitalsRow(
+                        vitals = data.vitalSigns!!,
+                        onVitalClick = { /* Handle vital click */ }
+                    )
                 }
             }
             item {

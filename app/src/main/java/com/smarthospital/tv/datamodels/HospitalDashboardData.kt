@@ -3,7 +3,8 @@ package com.smarthospital.tv.datamodels
 data class HospitalDashboardData(
     val vitals: List<VitalItem>,
     val scheduledActivities: List<ScheduledActivity>,
-    val careTeam: List<CareTeamMember>
+    val careTeam: List<CareTeamMember>,
+    val generalInfo: List<HospitalDataModel.GeneralInfo> = emptyList()
 )
 
 data class VitalItem(

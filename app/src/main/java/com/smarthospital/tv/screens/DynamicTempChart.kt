@@ -2,25 +2,25 @@ package com.smarthospital.tv.screens
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
+import com.smarthospital.tv.R
 import com.smarthospital.tv.datamodels.TemperatureReading
 import com.smarthospital.tv.ui.theme.VisionAppTheme
 
@@ -31,20 +31,18 @@ fun TemperatureChart(
     val maxTemp = readings.maxOfOrNull { it.tempF } ?: 100.0
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.Start
     ) {
-
-        // Title
-        Text(
-            text = "Temperature",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
-            )
+        // Reusable Chart Header
+        ChartHeader(
+            title = "Temperature",
+            iconRes = R.mipmap.ic_launcher
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         // Bars Row
         Row(
@@ -56,6 +54,34 @@ fun TemperatureChart(
                 TemperatureBar(
                     reading = reading,
                     maxTemp = maxTemp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Horizontal Line
+//        HorizontalDivider(
+//            modifier = Modifier.fillMaxWidth(),
+//            thickness = 1.dp,
+//            color = Color.DarkGray
+//        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Time labels aligned with bars
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            readings.forEach { reading ->
+                Text(
+                    text = reading.time,
+                    fontSize = 10.sp,
+                    color = Color.Gray,
+                    fontWeight = FontWeight.Light,
+                    modifier = Modifier.width(32.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -74,7 +100,6 @@ fun TemperatureBar(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom
     ) {
-
         // °F
         Text(
             text = "${reading.tempF}°F",
@@ -107,15 +132,6 @@ fun TemperatureBar(
                 )
             )
         }
-
-        Spacer(modifier = Modifier.height(6.dp))
-
-        // Time
-        Text(
-            text = reading.time,
-            fontSize = 12.sp,
-            textAlign = TextAlign.Center
-        )
     }
 }
 
