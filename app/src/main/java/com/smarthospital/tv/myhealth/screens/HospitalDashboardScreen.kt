@@ -21,14 +21,6 @@ import androidx.tv.material3.Text
 import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.smarthospital.tv.feedback.screens.ShareFeedbackDialog
 import com.smarthospital.tv.myhealth.ui.DashboardMode
@@ -97,9 +89,9 @@ fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
             .fillMaxSize()
             .background(Color(0xFF121212)),
         contentPadding = PaddingValues(
-            start = 48.dp,
+            start = 28.dp,
             top = 32.dp,
-            end = 48.dp,
+            end = 28.dp,
             bottom = 32.dp
         ),
         verticalArrangement = Arrangement.spacedBy(24.dp)

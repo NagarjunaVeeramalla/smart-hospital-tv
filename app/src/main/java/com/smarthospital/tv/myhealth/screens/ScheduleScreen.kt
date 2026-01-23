@@ -45,7 +45,7 @@ fun ScheduleCard(
         modifier = Modifier
             .width(130.dp)
             .height(110.dp)
-            .tvFocusDesign(width = 130.dp, shape = RoundedCornerShape(12.dp))
+            .tvFocusDesign(width = 130.dp)
             .padding(12.dp)
     ) {
         Text(

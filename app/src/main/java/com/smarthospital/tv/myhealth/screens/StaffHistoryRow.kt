@@ -52,7 +52,7 @@ fun MedicalStaffCard(
         modifier = Modifier
             .width(260.dp)
             .height(86.dp)
-            .tvFocusDesign(width = 260.dp, shape = RoundedCornerShape(12.dp))
+            .tvFocusDesign(width = 260.dp)
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

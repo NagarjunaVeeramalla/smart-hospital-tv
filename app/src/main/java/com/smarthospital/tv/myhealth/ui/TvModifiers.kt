@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
  */
 fun Modifier.tvFocusDesign(
     width: Dp,
-    shape: Shape = RoundedCornerShape(16.dp),
+    shape: Shape = RoundedCornerShape(2.dp),
     baseColor: Color = Color(0xFF1E1E1E)
 ): Modifier = composed {
     var isFocused by remember { mutableStateOf(false) }

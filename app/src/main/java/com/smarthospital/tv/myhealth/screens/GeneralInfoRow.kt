@@ -66,7 +66,7 @@ fun PatientInfoCard(
             modifier = Modifier
                 .width(cardWidth)
                 .height(140.dp)
-                .tvFocusDesign(width = cardWidth, shape = RoundedCornerShape(4.dp))
+                .tvFocusDesign(width = cardWidth)
                 .clickable { onClick() }
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -114,7 +114,7 @@ fun PatientInfoCard(
             modifier = Modifier
                 .width(cardWidth)
                 .height(140.dp)
-                .tvFocusDesign(width = cardWidth, shape = RoundedCornerShape(4.dp))
+                .tvFocusDesign(width = cardWidth)
                 .clickable { onClick() }
                 .padding(16.dp)
         ) {
