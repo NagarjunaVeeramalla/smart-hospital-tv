@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.foundation.lazy.list.TvLazyRow
+import androidx.tv.foundation.lazy.list.items
 import androidx.tv.material3.Text
 import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
@@ -26,12 +28,12 @@ import com.smarthospital.tv.myhealth.ui.tvFocusDesign
 fun OrdersRow(
     data: List<HospitalDataModel.ScheduledActivityGroup>
 ) {
-    LazyRow(
+    LazyRow (
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        items(data.size) { index ->
-            OrderCard(data[index])
+        items(data) { item ->
+            OrderCard(item)
         }
     }
 }
@@ -42,23 +44,23 @@ fun OrderCard(
 ) {
     Column(
         modifier = Modifier
-            .width(130.dp)
-            .height(110.dp)
-            .tvFocusDesign(width = 130.dp, shape = RoundedCornerShape(12.dp))
+            .width(140.dp)
+            .height(90.dp)
+            .tvFocusDesign(width = 140.dp, shape = RoundedCornerShape(10.dp))
             .padding(12.dp)
     ) {
         Text(
             text = item.groupName,
-            color = Color.Gray,
-            fontSize = 12.sp,
+            color = Color.White.copy(alpha = 0.8f),
+            fontSize = 14.sp,
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = item.orderCountRatio,
             color = Color.White,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold
         )
     }
 }
@@ -69,9 +71,9 @@ fun OrdersRowPreview() {
     SmartHospitalAppTheme {
         OrdersRow(
             data = listOf(
-                HospitalDataModel.ScheduledActivityGroup("X-ray", "2/2"),
+                HospitalDataModel.ScheduledActivityGroup("X-ray", "2/3"),
                 HospitalDataModel.ScheduledActivityGroup("CT Scan", "3/5"),
-                HospitalDataModel.ScheduledActivityGroup("Labs", "2/11"),
+                HospitalDataModel.ScheduledActivityGroup("Labs", "2/3"),
                 HospitalDataModel.ScheduledActivityGroup("Misc. Orders", "0/0")
             )
         )
@@ -85,7 +87,7 @@ fun OrderCardPreview() {
         OrderCard(
             item = HospitalDataModel.ScheduledActivityGroup(
                 groupName = "X-ray",
-                orderCountRatio = "2/2"
+                orderCountRatio = "2/3"
             )
         )
     }

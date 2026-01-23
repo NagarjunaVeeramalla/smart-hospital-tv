@@ -25,7 +25,7 @@ fun VitalsRow(
     onVitalClick: (HospitalDataModel.Vital) -> Unit = {}
 ) {
     LazyRow (
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
+        contentPadding = PaddingValues(start = 12.dp, end = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp)
     ) {
 
@@ -69,10 +69,10 @@ fun PatientVitalCard(
     Column(
         modifier = Modifier
             .width(360.dp)
-            .height(260.dp)
+            .height(280.dp)
             .tvFocusDesign(width = 360.dp)
             .clickable { onClick() }
-            .padding(16.dp),
+            .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         content()

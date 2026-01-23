@@ -15,6 +15,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 
 @Composable
@@ -36,11 +37,8 @@ fun ChartHeader(
         Spacer(modifier = Modifier.size(8.dp))
         Text(
             text = title,
-            style = TextStyle(
-                fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-                color = Color.LightGray
-            )
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White
         )
     }
 }

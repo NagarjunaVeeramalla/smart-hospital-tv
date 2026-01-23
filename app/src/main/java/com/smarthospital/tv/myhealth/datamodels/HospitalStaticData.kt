@@ -52,11 +52,11 @@ object HospitalStaticData {
         ),
         generalInfo = listOf(
             HospitalDataModel.GeneralInfo(
-                title = "Current Pain Rating",
+                title = "Pain Level",
                 values = listOf(
-                    "4/10",
+                    "0/10",
                     "https://farm9.staticflickr.com/8295/8007075227_dc958c1fe6_z_d.jpg",
-                    "Manageable Discomfort"
+                    "No Pain"
                 ),
                 card = HospitalDataModel.Card(
                     title = "Understanding the Pain Assessment Tool",

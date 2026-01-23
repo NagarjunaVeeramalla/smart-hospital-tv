@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import androidx.tv.material3.Text
 import com.smarthospital.tv.R
 import com.smarthospital.tv.myhealth.datamodels.BloodPressureReading
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun BloodPressureChart(
@@ -53,7 +55,11 @@ fun BloodPressureChart(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        HorizontalDivider(color = Color.Gray)
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Time labels aligned with bars
         Row(
@@ -67,7 +73,7 @@ fun BloodPressureChart(
                     color = Color.Gray,
                     fontWeight = FontWeight.Light,
                     modifier = Modifier.width(40.dp), // Match bar container width for alignment
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -87,7 +93,6 @@ fun BloodPressureBar(
         Text(
             text = reading.systolic.toString(),
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
             color = Color.White
         )
 
@@ -116,7 +121,7 @@ fun BloodPressureBar(
                 color = color,
                 start = Offset(centerX, topY + radiusPx),
                 end = Offset(centerX, bottomY - radiusPx),
-                strokeWidth = 3.dp.toPx(),
+                strokeWidth = 2.dp.toPx(),
                 cap = StrokeCap.Round
             )
 
