@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,9 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.material3.Text
 import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
+import com.smarthospital.tv.myhealth.datamodels.HospitalStaticData
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
 import com.smarthospital.tv.myhealth.ui.tvFocusDesign
 
@@ -75,13 +74,7 @@ fun ScheduleCard(
 fun ScheduleCardPreview() {
     SmartHospitalAppTheme {
         ScheduleCard(
-            activity = HospitalDataModel.ScheduledActivity(
-                type = "Test",
-                id = "1",
-                title = "CT Scan",
-                description = "Chest CT",
-                scheduledDateTime = "10:30 AM"
-            )
+            activity = HospitalStaticData.data.scheduledActivities!!.first()
         )
     }
 }
@@ -91,11 +84,7 @@ fun ScheduleCardPreview() {
 fun ScheduleRowPreview() {
     SmartHospitalAppTheme {
         ScheduleRow(
-            activities = listOf(
-                HospitalDataModel.ScheduledActivity("Test", "1", "CT Scan", "Chest CT", "10:30 AM"),
-                HospitalDataModel.ScheduledActivity("Test", "2", "X-Ray", "Left Leg", "11:00 AM"),
-                HospitalDataModel.ScheduledActivity("Test", "3", "Labs", "Blood Work", "11:30 AM")
-            )
+            activities = HospitalStaticData.data.scheduledActivities!!
         )
     }
 }

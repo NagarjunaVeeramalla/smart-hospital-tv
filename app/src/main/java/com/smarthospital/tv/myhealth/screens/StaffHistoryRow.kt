@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.tv.foundation.lazy.list.TvLazyRow
 import androidx.tv.material3.Text
 import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
+import com.smarthospital.tv.myhealth.datamodels.HospitalStaticData
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
 import com.smarthospital.tv.myhealth.ui.tvFocusDesign
 
@@ -104,18 +105,7 @@ fun MedicalStaffCard(
 fun StaffHistoryRowPreview() {
     SmartHospitalAppTheme {
         StaffHistoryRow(
-            data = listOf(
-                HospitalDataModel.StaffHistory(
-                    firstName = "Dr. Smith",
-                    staffType = "Physician",
-                    enteredDateTime = "Nov 18, 2025 at 6:30 PM"
-                ),
-                HospitalDataModel.StaffHistory(
-                    firstName = "Nurse Jane",
-                    staffType = "Nurse",
-                    enteredDateTime = "Nov 18, 2025 at 8:00 PM"
-                )
-            )
+            data = HospitalStaticData.data.staffHistory!!
         )
     }
 }

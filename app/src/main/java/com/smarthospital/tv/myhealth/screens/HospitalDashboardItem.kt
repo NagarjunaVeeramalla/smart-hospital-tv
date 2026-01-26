@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Text
+import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
 
 @Composable
 fun HospitalDashboardItem(
@@ -24,7 +26,18 @@ fun HospitalDashboardItem(
                 modifier = Modifier.padding(bottom = 12.dp)
             )
         }
-
         content()
+    }
+}
+
+@Preview
+@Composable
+fun HospitalDashboardItemPreview() {
+    SmartHospitalAppTheme {
+        HospitalDashboardItem(
+            title = "Patient Information"
+        ) {
+            Text(text = "This is sample content")
+        }
     }
 }

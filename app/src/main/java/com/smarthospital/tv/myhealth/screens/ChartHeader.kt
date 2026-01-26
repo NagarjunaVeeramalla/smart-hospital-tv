@@ -11,12 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import com.smarthospital.tv.R
 
 @Composable
 fun ChartHeader(
@@ -41,4 +40,13 @@ fun ChartHeader(
             color = Color.White
         )
     }
+}
+
+@Preview
+@Composable
+fun ChartHeaderPreview() {
+    ChartHeader(
+        title = "Chart Title",
+        iconRes = R.drawable.ic_sentiment_satisfied
+    )
 }

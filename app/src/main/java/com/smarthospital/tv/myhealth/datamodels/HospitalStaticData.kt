@@ -1,62 +1,140 @@
 package com.smarthospital.tv.myhealth.datamodels
 
-import com.smarthospital.tv.R
-
-
 object HospitalStaticData {
+    val data = HospitalDataModel(
+        vitalSigns = listOf(
+            // ❤️ HEART RATE
+            HospitalDataModel.Vital(
+                displayName = "Heart Rate",
+                hasData = true,
+                compoundSeparator = "",
+                unit = "BPM",
+                cardTitle = "Understanding Your Heart Rate",
+                cardDescription = "Normal heart rate is 60–100 BPM.",
+                measurements = listOf(
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T08:35:17Z",
+                        values = listOf(72.0)
+                    ),
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T14:20:10Z",
+                        values = listOf(78.0)
+                    ),
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T20:35:17Z",
+                        values = listOf(79.0)
+                    )
+                )
+            ),
 
-    val data = HospitalDashboardData(
-        vitals = listOf(
-            VitalItem(
-                displayName = "Heart Rate", unit = "BPM", values = listOf("79")
-            ), VitalItem(
-                displayName = "Temperature", unit = "°F / °C", values = listOf("101°F", "38.3°C")
-            ), VitalItem(
-                displayName = "Blood Pressure", unit = "mmHg", values = listOf("138 / 90")
-            )
-        ), scheduledActivities = listOf(
-            ScheduledActivity(
-                title = "US.RAD", description = "US.RAD L", time = "04:35 AM"
-            ), ScheduledActivity(
-                title = "CT Scan", description = "CT Scan Transmitted", time = "04:35 AM"
-            )
-        ), careTeam = listOf(
-            CareTeamMember(
-                "James",
-                "Sorensen",
-                "Admitting Physician",
-                id = "#00001",
-                profileImageRes = R.mipmap.ic_launcher
+            // 🩸 BLOOD PRESSURE
+            HospitalDataModel.Vital(
+                displayName = "Blood Pressure",
+                hasData = true,
+                compoundSeparator = "/",
+                unit = "mmHg",
+                cardTitle = "Understanding Your Blood Pressure",
+                cardDescription = "Normal BP is less than 120/80.",
+                measurements = listOf(
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T08:30:00Z",
+                        values = listOf(135.0, 88.0)
+                    ),
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T13:15:00Z",
+                        values = listOf(140.0, 92.0)
+                    ),
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T20:35:17Z",
+                        values = listOf(138.0, 90.0)
+                    )
+                )
             ),
-            CareTeamMember(
-                "Margaret",
-                "H.",
-                "Case Management",
-                id = "#00002",
-                profileImageRes = R.mipmap.ic_launcher
-            ),
-            CareTeamMember(
-                "Ellinor",
-                "D.",
-                "Patient Care Tech",
-                id = "#00003",
-                profileImageRes = R.mipmap.ic_launcher
-            ),
-            CareTeamMember(
-                "Alexandria",
-                "H.",
-                "Physical Therapy",
-                id = "#00004",
-                profileImageRes = R.mipmap.ic_launcher
+
+            // 🌡 TEMPERATURE
+            HospitalDataModel.Vital(
+                displayName = "Temperature",
+                hasData = true,
+                compoundSeparator = ",",
+                unit = "°F",
+                cardTitle = "Understanding Your Body Temperature",
+                cardDescription = "Normal body temperature is around 98.6°F.",
+                measurements = listOf(
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T08:25:00Z",
+                        values = listOf(98.4)
+                    ),
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T13:10:00Z",
+                        values = listOf(99.1)
+                    ),
+                    HospitalDataModel.Measurement(
+                        captureDateTime = "2025-09-25T20:30:00Z",
+                        values = listOf(101.2)
+                    )
+                )
             )
         ),
+
+        careTeam = listOf(
+            HospitalDataModel.CareTeam(
+                hca34 = "LID7031",
+                firstName = "Amanda",
+                lastName = "R.",
+                slot = "CTA.ClinicalRoles.RN",
+                clinicalRole = "Registered Nurse",
+                assignmentType = "Location"
+            )
+        ),
+
+        scheduledActivities = listOf(
+            HospitalDataModel.ScheduledActivity(
+                type = "Procedure",
+                id = "14203-20250925033517",
+                title = "CT Scan",
+                description = "CT Scan Transmitted",
+                scheduledDateTime = "2025-09-26T04:35:17Z"
+            )
+        ),
+
+        scheduledActivityGroupCounts = listOf(
+            HospitalDataModel.ScheduledActivityGroup(
+                groupName = "CT Scans",
+                orderCountRatio = "0/1"
+            )
+        ),
+
+        staffHistory = listOf(
+            HospitalDataModel.StaffHistory(
+                enteredDateTime = "2025-09-25T08:35:17Z",
+                firstName = "Amanda",
+                staffType = "Registered Nurse"
+            ),
+            HospitalDataModel.StaffHistory(
+                enteredDateTime = "2025-09-25T08:35:17Z",
+                firstName = "Amanda",
+                staffType = "Registered Nurse"
+            )
+        ),
+
+        careTeamED = listOf(
+            HospitalDataModel.CareTeam(
+                hca34 = null,
+                firstName = "Lunese",
+                lastName = "M.",
+                slot = null,
+                clinicalRole = "Nurse",
+                assignmentType = null
+            )
+        ),
+
         generalInfo = listOf(
             HospitalDataModel.GeneralInfo(
-                title = "Pain Level",
+                title = "Current Pain Rating",
                 values = listOf(
-                    "0/10",
+                    "4/10",
                     "https://farm9.staticflickr.com/8295/8007075227_dc958c1fe6_z_d.jpg",
-                    "No Pain"
+                    "Manageable Discomfort"
                 ),
                 card = HospitalDataModel.Card(
                     title = "Understanding the Pain Assessment Tool",
@@ -77,59 +155,8 @@ object HospitalStaticData {
                 ),
                 card = null
             )
-        )
-    )
-}
-
-fun Pair<Double, Double>.toTemperatureReadings(): List<TemperatureReading> {
-    return listOf(
-        TemperatureReading(
-            time = "12:38 PM", tempF = first
-        ), TemperatureReading(
-            time = "6:45 AM", tempF = second
-        ), TemperatureReading(
-            time = "6:45 AM", tempF = second
-        )
-    )
-}
-
-fun Pair<Pair<Int, Int>, Pair<Int, Int>>.toBloodPressureReadings(): List<BloodPressureReading> {
-    return listOf(
-        BloodPressureReading(
-            time = "8am",
-            systolic = first.first,
-            diastolic = first.second
         ),
-        BloodPressureReading(
-            time = "12pm",
-            systolic = second.first,
-            diastolic = second.second
-        ),
-        BloodPressureReading(
-            time = "12pm",
-            systolic = second.first,
-            diastolic = second.second
-        )
+
+        isFeedbackComplete = false
     )
 }
-
-fun Pair<Int, Int>.toHeartRateReadings(): List<HeartRateReading> {
-    return listOf(
-        HeartRateReading("8am", first),
-        HeartRateReading("12pm", second)
-    )
-}
-
-
-data class VitalData(
-    val temperature: Pair<Double, Double>, // (12:38 PM temp, 6:45 AM temp)
-    val heartRate: Pair<Int, Int>, // (12:38 PM, 6:45 AM)
-    val bloodPressure: Pair<Pair<Int, Int>, Pair<Int, Int>> // (12:38 PM (systolic, diastolic), 6:45 AM (systolic, diastolic))
-)
-
-// Sample Data
-val sampleData = VitalData(
-    temperature = Pair(102.0, 99.0),
-    heartRate = Pair(82, 73),
-    bloodPressure = Pair(Pair(117, 75), Pair(128, 77))
-)

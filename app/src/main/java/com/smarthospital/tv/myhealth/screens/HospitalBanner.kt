@@ -9,22 +9,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.Text
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 @Composable
 fun HospitalBanner(
     imageUrl: String
 ) {
-    Box(
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = "Hospital Banner",
         modifier = Modifier
             .fillMaxWidth()
             .height(240.dp)
-            .background(Color.DarkGray)
-    ) {
-        Text(
-            text = "My Health Banner",
-            color = Color.White,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
+            .background(Color.DarkGray),
+        contentScale = ContentScale.Crop
+    )
 }

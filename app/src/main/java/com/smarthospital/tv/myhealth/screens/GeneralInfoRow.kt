@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.tv.material3.Text
 import com.smarthospital.tv.R
 import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
@@ -35,6 +36,7 @@ import com.smarthospital.tv.myhealth.ui.tvFocusDesign
 @Composable
 fun GeneralInfoRow(
     data: List<HospitalDataModel.GeneralInfo>,
+    focusRequester: FocusRequester? = null,
     onInfoClick: (HospitalDataModel.GeneralInfo) -> Unit = {}
 ) {
     LazyRow (
@@ -44,6 +46,7 @@ fun GeneralInfoRow(
         items(data.size) { index ->
             PatientInfoCard(
                 info = data[index],
+                modifier = if (index == 0 && focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier,
                 onClick = { onInfoClick(data[index]) }
             )
         }
@@ -53,6 +56,7 @@ fun GeneralInfoRow(
 @Composable
 fun PatientInfoCard(
     info: HospitalDataModel.GeneralInfo,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
     val cardWidth = when (info.title) {
@@ -63,7 +67,7 @@ fun PatientInfoCard(
 
     if (info.title == "Current Pain Rating" || info.title == "Pain Level") {
         Row(
-            modifier = Modifier
+            modifier = modifier
                 .width(cardWidth)
                 .height(140.dp)
                 .tvFocusDesign(width = cardWidth)
@@ -111,7 +115,7 @@ fun PatientInfoCard(
         }
     } else {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .width(cardWidth)
                 .height(140.dp)
                 .tvFocusDesign(width = cardWidth)

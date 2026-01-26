@@ -173,7 +173,7 @@ fun HeartRateLineChart(
 @Composable
 fun HeartRateChartPreview() {
     SmartHospitalAppTheme {
-        PatientVitalCard() {
+        PatientVitalCard {
             HeartRateChart(
                 readings = listOf(
                     HeartRateReading("9am", 60),

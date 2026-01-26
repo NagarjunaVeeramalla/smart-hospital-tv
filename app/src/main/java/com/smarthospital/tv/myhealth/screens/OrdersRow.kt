@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Text
 import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
+import com.smarthospital.tv.myhealth.datamodels.HospitalStaticData
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
 import com.smarthospital.tv.myhealth.ui.tvFocusDesign
 
@@ -67,12 +68,7 @@ fun OrderCard(
 fun OrdersRowPreview() {
     SmartHospitalAppTheme {
         OrdersRow(
-            data = listOf(
-                HospitalDataModel.ScheduledActivityGroup("X-ray", "2/3"),
-                HospitalDataModel.ScheduledActivityGroup("CT Scan", "3/5"),
-                HospitalDataModel.ScheduledActivityGroup("Labs", "2/3"),
-                HospitalDataModel.ScheduledActivityGroup("Misc. Orders", "0/0")
-            )
+            data = HospitalStaticData.data.scheduledActivityGroupCounts!!
         )
     }
 }
@@ -82,10 +78,7 @@ fun OrdersRowPreview() {
 fun OrderCardPreview() {
     SmartHospitalAppTheme {
         OrderCard(
-            item = HospitalDataModel.ScheduledActivityGroup(
-                groupName = "X-ray",
-                orderCountRatio = "2/3"
-            )
+            item = HospitalStaticData.data.scheduledActivityGroupCounts!!.first()
         )
     }
 }

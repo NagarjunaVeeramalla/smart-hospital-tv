@@ -46,7 +46,7 @@ fun TemperatureChart(
             iconRes = R.mipmap.ic_launcher
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Bottom) {
             // Bars Row
@@ -143,7 +143,7 @@ fun TemperatureBar(
 @Composable
 fun TemperatureChartPreview() {
     SmartHospitalAppTheme {
-        PatientVitalCard() {
+        PatientVitalCard {
             TemperatureChart(
                 readings = listOf(
                     TemperatureReading("9am", 98.6),

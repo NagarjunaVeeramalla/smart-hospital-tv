@@ -1,6 +1,5 @@
 package com.smarthospital.tv.myhealth.screens
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,7 +21,9 @@ import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.focus.FocusRequester
 import com.smarthospital.tv.feedback.screens.ShareFeedbackDialog
+import com.smarthospital.tv.myhealth.datamodels.HospitalStaticData
 import com.smarthospital.tv.myhealth.ui.DashboardMode
 import com.smarthospital.tv.myhealth.ui.HospitalUiState
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
@@ -32,7 +33,7 @@ import com.smarthospital.tv.myhealth.viewmodels.HospitalDashboardViewModel
 @Composable
 fun HospitalDashboardScreen(
     viewModel: HospitalDashboardViewModel = viewModel(),
-    dashboardMode: DashboardMode = DashboardMode.EMERGENCY_DEPARTMENT
+    dashboardMode: DashboardMode = DashboardMode.INPATIENT_WARD
 ) {
     val uiState by viewModel.myHealthUiState.collectAsState()
     var hasUserDismissedFeedbackPopup by remember { mutableStateOf(false) }
@@ -83,6 +84,11 @@ fun HospitalDashboardScreen(
 
 @Composable
 fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -105,11 +111,12 @@ fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
             )
         }
 
-        //if (dashboardMode == DashboardMode.EMERGENCY_DEPARTMENT) {
+        if (dashboardMode == DashboardMode.EMERGENCY_DEPARTMENT) {
             item {
                 HospitalDashboardItem(title = "General Info") {
                     GeneralInfoRow(
                         data = data.generalInfo!!,
+                        focusRequester = focusRequester,
                         onInfoClick = { /* Handle info click */ }
                     )
                 }
@@ -124,11 +131,12 @@ fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
                     CareTeamRow(data.careTeamED!!)
                 }
             }
-        //} else {
+        } else {
             item {
                 HospitalDashboardItem(title = "Vitals") {
                     VitalsRow(
                         vitals = data.vitalSigns!!,
+                        focusRequester = focusRequester,
                         onVitalClick = { /* Handle vital click */ }
                     )
                 }
@@ -143,7 +151,7 @@ fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
                     CareTeamRow(data.careTeam!!) // reuse
                 }
             }
-        //}
+        }
 
         item {
             HospitalDashboardItem(title = "Staff History") {
@@ -151,7 +159,7 @@ fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
             }
         }
         item {
-            HospitalBanner(imageUrl = "")
+            HospitalBanner(imageUrl = "https://yavuzceliker.github.io/sample-images/image-1022.jpg")
         }
     }
 }
@@ -182,167 +190,9 @@ fun ErrorContent(message: String) {
 @Preview(device = "id:tv_1080p")
 @Composable
 fun HospitalContentPreview() {
-    val data = HospitalDataModel(
-
-        vitalSigns = listOf(
-
-            // ❤️ HEART RATE
-            HospitalDataModel.Vital(
-                displayName = "Heart Rate",
-                hasData = true,
-                compoundSeparator = "",
-                unit = "BPM",
-                cardTitle = "Understanding Your Heart Rate",
-                cardDescription = "Normal heart rate is 60–100 BPM.",
-                measurements = listOf(
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T08:35:17Z",
-                        values = listOf(72.0)
-                    ),
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T14:20:10Z",
-                        values = listOf(78.0)
-                    ),
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T20:35:17Z",
-                        values = listOf(79.0)
-                    )
-                )
-            ),
-
-            // 🩸 BLOOD PRESSURE
-            HospitalDataModel.Vital(
-                displayName = "Blood Pressure",
-                hasData = true,
-                compoundSeparator = "/",
-                unit = "mmHg",
-                cardTitle = "Understanding Your Blood Pressure",
-                cardDescription = "Normal BP is less than 120/80.",
-                measurements = listOf(
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T08:30:00Z",
-                        values = listOf(135.0, 88.0)
-                    ),
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T13:15:00Z",
-                        values = listOf(140.0, 92.0)
-                    ),
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T20:35:17Z",
-                        values = listOf(138.0, 90.0)
-                    )
-                )
-            ),
-
-            // 🌡 TEMPERATURE
-            HospitalDataModel.Vital(
-                displayName = "Temperature",
-                hasData = true,
-                compoundSeparator = ",",
-                unit = "°F",
-                cardTitle = "Understanding Your Body Temperature",
-                cardDescription = "Normal body temperature is around 98.6°F.",
-                measurements = listOf(
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T08:25:00Z",
-                        values = listOf(98.4)
-                    ),
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T13:10:00Z",
-                        values = listOf(99.1)
-                    ),
-                    HospitalDataModel.Measurement(
-                        captureDateTime = "2025-09-25T20:30:00Z",
-                        values = listOf(101.2)
-                    )
-                )
-            )
-        ),
-
-        careTeam = listOf(
-            HospitalDataModel.CareTeam(
-                hca34 = "LID7031",
-                firstName = "Amanda",
-                lastName = "R.",
-                slot = "CTA.ClinicalRoles.RN",
-                clinicalRole = "Registered Nurse",
-                assignmentType = "Location"
-            )
-        ),
-
-        scheduledActivities = listOf(
-            HospitalDataModel.ScheduledActivity(
-                type = "Procedure",
-                id = "14203-20250925033517",
-                title = "CT Scan",
-                description = "CT Scan Transmitted",
-                scheduledDateTime = "2025-09-26T04:35:17Z"
-            )
-        ),
-
-        scheduledActivityGroupCounts = listOf(
-            HospitalDataModel.ScheduledActivityGroup(
-                groupName = "CT Scans",
-                orderCountRatio = "0/1"
-            )
-        ),
-
-        staffHistory = listOf(
-            HospitalDataModel.StaffHistory(
-                enteredDateTime = "2025-09-25T08:35:17Z",
-                firstName = "Amanda",
-                staffType = "Registered Nurse"
-            ),
-            HospitalDataModel.StaffHistory(
-                enteredDateTime = "2025-09-25T08:35:17Z",
-                firstName = "Amanda",
-                staffType = "Registered Nurse"
-            )
-        ),
-
-        careTeamED = listOf(
-            HospitalDataModel.CareTeam(
-                hca34 = null,
-                firstName = "Lunese",
-                lastName = "M.",
-                slot = null,
-                clinicalRole = "Nurse",
-                assignmentType = null
-            )
-        ),
-
-        generalInfo = listOf(
-            HospitalDataModel.GeneralInfo(
-                title = "Current Pain Rating",
-                values = listOf(
-                    "4/10",
-                    "https://farm9.staticflickr.com/8295/8007075227_dc958c1fe6_z_d.jpg",
-                    "Manageable Discomfort"
-                ),
-                card = HospitalDataModel.Card(
-                    title = "Understanding the Pain Assessment Tool",
-                    description = "Our healthcare professionals employ the Wong-Baker scale to evaluate your comfort levels. Sharing an accurate rating helps us customize your pain management and therapeutic approach effectively.",
-                    imageUrl = "https://farm2.staticflickr.com/1449/24800673529_64272a66ec_z_d.jpg"
-                )
-            ),
-            HospitalDataModel.GeneralInfo(
-                title = "Entry Details",
-                values = listOf("Admitted on Nov 18, 2025 at 6:27 PM"),
-                card = null
-            ),
-            HospitalDataModel.GeneralInfo(
-                title = "Dietary Guidelines",
-                values = listOf(
-                    "Restricted: NPO (Nothing by mouth)",
-                    "https://farm8.staticflickr.com/7377/9359257263_81b080a039_z_d.jpg"
-                ),
-                card = null
-            )
-        ),
-
-        isFeedbackComplete = false
-    )
+    val data = HospitalStaticData.data
     SmartHospitalAppTheme {
-        HospitalContent(data = data, dashboardMode = DashboardMode.EMERGENCY_DEPARTMENT)
+        HospitalContent(data = data, dashboardMode = DashboardMode.INPATIENT_WARD)
     }
 }
+
