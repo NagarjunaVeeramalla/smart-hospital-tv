@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +36,8 @@ fun TemperatureChart(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .fillMaxHeight()
+            .padding(8.dp),
         horizontalAlignment = Alignment.Start
     ) {
         // Reusable Chart Header
@@ -44,27 +46,29 @@ fun TemperatureChart(
             iconRes = R.mipmap.ic_launcher
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Bars Row
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            readings.forEach { reading ->
-                Box(
-                    modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    TemperatureBar(
-                        reading = reading,
-                        maxTemp = maxTemp
-                    )
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Bottom) {
+            // Bars Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom
+            ) {
+                readings.forEach { reading ->
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        TemperatureBar(
+                            reading = reading,
+                            maxTemp = maxTemp
+                        )
+                    }
                 }
             }
         }
 
-        HorizontalDivider(color = Color.Gray)
+        HorizontalDivider(color = Color.White)
         Spacer(modifier = Modifier.height(6.dp))
 
         // Time labels aligned with bars
@@ -78,7 +82,8 @@ fun TemperatureChart(
                 ) {
                     Text(
                         text = reading.time,
-                        fontSize = 12.sp
+                        fontSize = 10.sp,
+                        color = Color.White
                     )
                 }
             }
@@ -102,13 +107,15 @@ fun TemperatureBar(
         Text(
             text = "${reading.tempF}°F",
             fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.White
         )
 
         // °C
         Text(
             text = String.format(Locale.US, "%.1f°C", tempC),
             fontSize = 14.sp,
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -132,16 +139,18 @@ fun TemperatureBar(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0xFF121212)
 @Composable
 fun TemperatureChartPreview() {
     SmartHospitalAppTheme {
-        TemperatureChart(
-            readings = listOf(
-                TemperatureReading("9am", 98.6),
-                TemperatureReading("12pm", 99.6),
-                TemperatureReading("3pm", 100.3)
+        PatientVitalCard() {
+            TemperatureChart(
+                readings = listOf(
+                    TemperatureReading("9am", 98.6),
+                    TemperatureReading("12pm", 99.6),
+                    TemperatureReading("3pm", 100.3)
+                )
             )
-        )
+        }
     }
 }

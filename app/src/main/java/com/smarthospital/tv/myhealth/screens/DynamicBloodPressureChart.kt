@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,7 +27,6 @@ import androidx.tv.material3.Text
 import com.smarthospital.tv.R
 import com.smarthospital.tv.myhealth.datamodels.BloodPressureReading
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
-import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun BloodPressureChart(
@@ -34,7 +35,8 @@ fun BloodPressureChart(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxHeight()
+            .padding(8.dp),
         horizontalAlignment = Alignment.Start
     ) {
         // Chart Header
@@ -43,21 +45,26 @@ fun BloodPressureChart(
             iconRes = R.mipmap.ic_launcher
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.Bottom
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Bottom
         ) {
-            readings.forEach { reading ->
-                BloodPressureBar(reading)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                readings.forEach { reading ->
+                    BloodPressureBar(reading)
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        HorizontalDivider(color = Color.Gray)
+        HorizontalDivider(color = Color.White)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -70,7 +77,7 @@ fun BloodPressureChart(
                 Text(
                     text = reading.time,
                     fontSize = 10.sp,
-                    color = Color.Gray,
+                    color = Color.White,
                     fontWeight = FontWeight.Light,
                     modifier = Modifier.width(40.dp), // Match bar container width for alignment
                     textAlign = TextAlign.Center
@@ -147,12 +154,14 @@ fun BloodPressureBar(
 @Composable
 fun BloodPressureChartPreview() {
     SmartHospitalAppTheme {
-        BloodPressureChart(
-            readings = listOf(
-                BloodPressureReading("9am", 140, 95),
-                BloodPressureReading("12pm", 130, 90),
-                BloodPressureReading("3pm", 120, 95)
+        PatientVitalCard {
+            BloodPressureChart(
+                readings = listOf(
+                    BloodPressureReading("9am", 140, 95),
+                    BloodPressureReading("12pm", 130, 90),
+                    BloodPressureReading("3pm", 120, 95)
+                )
             )
-        )
+        }
     }
 }

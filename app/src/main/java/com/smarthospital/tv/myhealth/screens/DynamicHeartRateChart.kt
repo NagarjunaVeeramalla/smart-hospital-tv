@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,7 +37,8 @@ fun HeartRateChart(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxHeight()
+            .padding(8.dp),
         horizontalAlignment = Alignment.Start
     ) {
         ChartHeader(
@@ -44,22 +46,24 @@ fun HeartRateChart(
             iconRes = R.mipmap.ic_launcher // Using a heart icon
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            HeartRateLineChart(
-                readings = readings,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-            )
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Bottom) {
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                HeartRateLineChart(
+                    readings = readings,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                )
+            }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(36.dp))
 
-        HorizontalDivider(color = Color.Gray)
+        HorizontalDivider(color = Color.White)
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -70,8 +74,8 @@ fun HeartRateChart(
             readings.forEach { reading ->
                 Text(
                     text = reading.time,
-                    fontSize = 12.sp,
-                    color = Color.Gray,
+                    fontSize = 10.sp,
+                    color = Color.White,
                     fontWeight = FontWeight.Light,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f)
@@ -147,7 +151,7 @@ fun HeartRateLineChart(
                 color = linePathColor,
                 radius = radiusPx,
                 center = Offset(x, yPos),
-                style = Stroke(width = 2.dp.toPx())
+                style = Stroke(width = 3.dp.toPx())
             )
 
             drawContext.canvas.nativeCanvas.drawText(
@@ -169,12 +173,14 @@ fun HeartRateLineChart(
 @Composable
 fun HeartRateChartPreview() {
     SmartHospitalAppTheme {
-        HeartRateChart(
-            readings = listOf(
-                HeartRateReading("9am", 60),
-                HeartRateReading("12pm", 75),
-                HeartRateReading("3pm", 61)
+        PatientVitalCard() {
+            HeartRateChart(
+                readings = listOf(
+                    HeartRateReading("9am", 60),
+                    HeartRateReading("12pm", 75),
+                    HeartRateReading("3pm", 61)
+                )
             )
-        )
+        }
     }
 }
