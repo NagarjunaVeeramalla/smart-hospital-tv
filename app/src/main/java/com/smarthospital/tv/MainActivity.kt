@@ -6,12 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Surface
 import com.smarthospital.tv.feedback.screens.FeedbackDirectScreen
 import com.smarthospital.tv.feedback.screens.MainNavRailScreen
 import com.smarthospital.tv.myhealth.screens.HospitalDashboardScreen
+import com.smarthospital.tv.myhealth.screens.VitalDetailScreen
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
+import com.smarthospital.tv.myhealth.viewmodels.HospitalDashboardViewModel
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalTvMaterial3Api::class)
@@ -23,9 +30,32 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     shape = RectangleShape
                 ) {
-                    //MainNavRailScreen()
-                    //FeedbackDirectScreen()
-                    HospitalDashboardScreen()
+                    val navController = rememberNavController()
+                    val viewModel: HospitalDashboardViewModel = viewModel()
+
+                    NavHost(navController = navController, startDestination = "dashboard") {
+                        composable("dashboard") {
+                            HospitalDashboardScreen(
+                                viewModel = viewModel,
+                                onVitalClick = { vitalName ->
+                                    navController.navigate("vital_detail/$vitalName")
+                                }
+                            )
+                        }
+                        composable(
+                            route = "vital_detail/{vitalName}",
+                            arguments = listOf(navArgument("vitalName") { type = androidx.navigation.NavType.StringType })
+                        ) { backStackEntry ->
+                            val vitalName = backStackEntry.arguments?.getString("vitalName") ?: ""
+                            VitalDetailScreen(
+                                vitalName = vitalName,
+                                viewModel = viewModel,
+                                onBackClick = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }

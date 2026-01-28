@@ -34,7 +34,8 @@ import com.smarthospital.tv.myhealth.viewmodels.HospitalDashboardViewModel
 @Composable
 fun HospitalDashboardScreen(
     viewModel: HospitalDashboardViewModel = viewModel(),
-    dashboardMode: DashboardMode = DashboardMode.INPATIENT_WARD
+    dashboardMode: DashboardMode = DashboardMode.INPATIENT_WARD,
+    onVitalClick: (String) -> Unit = {}
 ) {
     val uiState by viewModel.myHealthUiState.collectAsState()
     var hasUserDismissedFeedbackPopup by remember { mutableStateOf(false) }
@@ -54,7 +55,7 @@ fun HospitalDashboardScreen(
 
         is HospitalUiState.Success -> {
             val data = (uiState as HospitalUiState.Success).data
-            HospitalContent(data, dashboardMode)
+            HospitalContent(data, dashboardMode, onVitalClick)
         }
 
         is HospitalUiState.Error -> {
@@ -85,7 +86,11 @@ fun HospitalDashboardScreen(
 
 
 @Composable
-fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
+fun HospitalContent(
+    data: HospitalDataModel,
+    dashboardMode: DashboardMode,
+    onVitalClick: (String) -> Unit = {}
+) {
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -139,7 +144,7 @@ fun HospitalContent(data: HospitalDataModel, dashboardMode: DashboardMode) {
                     VitalsRow(
                         vitals = data.vitalSigns!!,
                         focusRequester = focusRequester,
-                        onVitalClick = { /* Handle vital click */ }
+                        onVitalClick = { vital -> onVitalClick(vital.displayName) }
                     )
                 }
             }
