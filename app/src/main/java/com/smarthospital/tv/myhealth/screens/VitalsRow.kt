@@ -71,14 +71,17 @@ fun VitalsRow(
 fun PatientVitalCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
+    isFocusable: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val clickableModifier = if (isFocusable) Modifier.clickable { onClick() } else Modifier
+
     Column(
         modifier = modifier
             .width(295.dp)
             .height(295.dp)
-            .tvFocusDesign(width = 295.dp)
-            .clickable { onClick() },
+            .tvFocusDesign(width = 295.dp, allowFocus = isFocusable)
+            .then(clickableModifier),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         content()

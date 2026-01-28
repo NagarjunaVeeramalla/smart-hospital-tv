@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.dp
 fun Modifier.tvFocusDesign(
     width: Dp,
     shape: Shape = RoundedCornerShape(2.dp),
-    baseColor: Color = Color(0xFF1E1E1E)
+    baseColor: Color = Color(0xFF1E1E1E),
+    allowFocus: Boolean = true
 ): Modifier = composed {
     var isFocused by remember { mutableStateOf(false) }
     val density = LocalDensity.current
@@ -36,11 +37,18 @@ fun Modifier.tvFocusDesign(
     val shineStart = if (isFocused) Color(0x28FFFFFF) else Color(0x10FFFFFF)
     val shineEnd = if (isFocused) Color(0x1A000000) else Color(0x0A000000)
 
+    val focusModifier = if (allowFocus) {
+        Modifier
+            .onFocusChanged {
+                isFocused = it.isFocused || it.hasFocus
+            }
+            .focusable()
+    } else {
+        Modifier
+    }
+
     this
-        .onFocusChanged {
-            isFocused = it.isFocused || it.hasFocus
-        }
-        .focusable()
+        .then(focusModifier)
         .scale(if (isFocused) 1.08f else 1f)
         .background(color = baseColor, shape = shape) // Base surface
         .background( // Radial shine overlay
