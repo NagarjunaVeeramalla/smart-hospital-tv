@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -68,6 +69,7 @@ fun HospitalDashboardScreen(
             )
         ) {
             ShareFeedbackDialog(
+                modifier = Modifier.padding(50.dp),
                 onShareFeedbackClick = {
                     // For now, we just close the invitation. 
                     // In a real app, this might navigate to a full feedback screen.

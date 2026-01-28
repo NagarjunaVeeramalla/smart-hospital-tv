@@ -78,8 +78,7 @@ fun BloodPressureChart(
                     text = reading.time,
                     fontSize = 10.sp,
                     color = Color.White,
-                    fontWeight = FontWeight.Light,
-                    modifier = Modifier.width(40.dp), // Match bar container width for alignment
+                    fontWeight = FontWeight.Light,// Match bar container width for alignment
                     textAlign = TextAlign.Center
                 )
             }
@@ -157,9 +156,9 @@ fun BloodPressureChartPreview() {
         PatientVitalCard {
             BloodPressureChart(
                 readings = listOf(
-                    BloodPressureReading("9am", 140, 95),
-                    BloodPressureReading("12pm", 130, 90),
-                    BloodPressureReading("3pm", 120, 95)
+                    BloodPressureReading("9:00 Am", 140, 95),
+                    BloodPressureReading("12:00 pm", 130, 90),
+                    BloodPressureReading("3:00 pm", 120, 95)
                 )
             )
         }

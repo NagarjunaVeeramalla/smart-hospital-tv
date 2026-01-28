@@ -75,9 +75,9 @@ fun PatientVitalCard(
 ) {
     Column(
         modifier = modifier
-            .width(280.dp)
-            .height(280.dp)
-            .tvFocusDesign(width = 280.dp)
+            .width(295.dp)
+            .height(295.dp)
+            .tvFocusDesign(width = 295.dp)
             .clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
