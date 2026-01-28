@@ -35,7 +35,8 @@ import com.smarthospital.tv.myhealth.viewmodels.HospitalDashboardViewModel
 fun HospitalDashboardScreen(
     viewModel: HospitalDashboardViewModel = viewModel(),
     dashboardMode: DashboardMode = DashboardMode.INPATIENT_WARD,
-    onVitalClick: (String) -> Unit = {}
+    onVitalClick: (HospitalDataModel.Vital) -> Unit = {},
+    onFeedbackClick: () -> Unit = {}
 ) {
     val uiState by viewModel.myHealthUiState.collectAsState()
     var hasUserDismissedFeedbackPopup by remember { mutableStateOf(false) }
@@ -72,9 +73,8 @@ fun HospitalDashboardScreen(
             ShareFeedbackDialog(
                 modifier = Modifier.padding(50.dp),
                 onShareFeedbackClick = {
-                    // For now, we just close the invitation. 
-                    // In a real app, this might navigate to a full feedback screen.
                     hasUserDismissedFeedbackPopup = true
+                    onFeedbackClick()
                 },
                 onNotNowClick = {
                     hasUserDismissedFeedbackPopup = true
@@ -89,7 +89,7 @@ fun HospitalDashboardScreen(
 fun HospitalContent(
     data: HospitalDataModel,
     dashboardMode: DashboardMode,
-    onVitalClick: (String) -> Unit = {}
+    onVitalClick: (HospitalDataModel.Vital) -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -144,7 +144,7 @@ fun HospitalContent(
                     VitalsRow(
                         vitals = data.vitalSigns!!,
                         focusRequester = focusRequester,
-                        onVitalClick = { vital -> onVitalClick(vital.displayName) }
+                        onVitalClick = onVitalClick
                     )
                 }
             }

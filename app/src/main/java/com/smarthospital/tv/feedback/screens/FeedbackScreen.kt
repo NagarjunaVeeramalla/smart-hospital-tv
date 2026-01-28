@@ -24,17 +24,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.Button
+import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import com.smarthospital.tv.feedback.datamodels.FeedbackScreenData
 import com.smarthospital.tv.feedback.datamodels.Question
+import com.smarthospital.tv.feedback.datamodels.SurveyFeedback
 import com.smarthospital.tv.feedback.ui_states.FeedbackScreenUiState
 import com.smarthospital.tv.feedback.ui_states.FeedbackSubmissionState
+import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
+import com.smarthospital.tv.myhealth.ui.tvFocusDesign
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
@@ -95,7 +102,7 @@ fun FeedbackScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp).background(color = Color.DarkGray),
-                    horizontalAlignment = Alignment.Start,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(24.dp)
                 ) {
                     item {
@@ -147,21 +154,32 @@ fun FeedbackScreen(
                         }
                     }
                     item {
-                        Button(
-                            enabled = isButtonEnabled && feedbackSubmissionState != FeedbackSubmissionState.Submitting,
-                            onClick = {
-                                onSubmitFeedback(data.title, currentQuestions)
-                                currentQuestions.forEach { question ->
-                                    Log.d("FeedbackScreen", "${question.mainQuestion}: ${question.rating} stars")
-                                }
-                            }, modifier = Modifier
-                                .padding(top = 16.dp)
-                                .fillMaxWidth()
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
                         ) {
-                            if (feedbackSubmissionState == FeedbackSubmissionState.Submitting) {
-                                CircularProgressIndicator(modifier = Modifier.height(24.dp))
-                            } else {
-                                Text("Submit Feedback")
+                            Button(
+                                enabled = isButtonEnabled && feedbackSubmissionState != FeedbackSubmissionState.Submitting,
+                                onClick = {
+                                    onSubmitFeedback(data.title, currentQuestions)
+                                    currentQuestions.forEach { question ->
+                                        Log.d("FeedbackScreen", "${question.mainQuestion}: ${question.rating} stars")
+                                    }
+                                },
+                                modifier = Modifier
+                                    .padding(top = 16.dp)
+                                    .tvFocusDesign(240.dp),
+                                shape = ButtonDefaults.shape(shape = RectangleShape),
+                                colors = ButtonDefaults.colors(
+                                    containerColor = Color.White,
+                                    contentColor = Color.Black
+                                )
+                            ) {
+                                if (feedbackSubmissionState == FeedbackSubmissionState.Submitting) {
+                                    CircularProgressIndicator(modifier = Modifier.height(24.dp))
+                                } else {
+                                    Text("Submit Feedback")
+                                }
                             }
                         }
                     }
@@ -178,5 +196,30 @@ fun FeedbackScreen(
                 )
             }
         }
+    }
+}
+
+@Preview(device = "id:tv_1080p")
+@Composable
+fun FeedbackScreenPreview() {
+    SmartHospitalAppTheme {
+        FeedbackScreen(
+            feedbackScreenUiState = FeedbackScreenUiState.Success(
+                FeedbackScreenData(
+                    title = "Patient Feedback",
+                    surveyFeedback = SurveyFeedback(
+                        questions = listOf(
+                            Question(id = 1, mainQuestion = "How was your overall experience?", subQuestion = "Rate your stay", rating = 4),
+                            Question(id = 2, mainQuestion = "How was the staff?", subQuestion = "Were they helpful and attentive?", rating = 5),
+                            Question(id = 3, mainQuestion = "Cleanliness of the facility", subQuestion = "Was your room and the facility clean?", rating = 3)
+                        )
+                    ),
+                    isFeedbackComplete = false
+                )
+            ),
+            feedbackSubmissionState = FeedbackSubmissionState.Idle,
+            onSubmitFeedback = { _, _ -> },
+            onUpdateRating = { _, _ -> }
+        )
     }
 }

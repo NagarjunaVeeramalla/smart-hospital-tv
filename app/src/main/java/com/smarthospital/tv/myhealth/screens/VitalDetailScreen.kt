@@ -37,16 +37,13 @@ import com.smarthospital.tv.myhealth.ui.tvFocusDesign
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun VitalDetailScreen(
-    vitalName: String,
-    viewModel: HospitalDashboardViewModel,
+    vital: HospitalDataModel.Vital?,
     onBackClick: () -> Unit
 ) {
-    val uiState by viewModel.myHealthUiState.collectAsState()
-    val data = (uiState as? HospitalUiState.Success)?.data
-    val vital = data?.vitalSigns?.firstOrNull { it.displayName == vitalName }
+    if (vital == null) return
 
     VitalDetailContent(
-        vitalName = vitalName,
+        vitalName = vital.displayName,
         vital = vital,
         onBackClick = onBackClick
     )

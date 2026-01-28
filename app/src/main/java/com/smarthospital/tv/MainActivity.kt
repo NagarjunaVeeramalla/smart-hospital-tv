@@ -15,6 +15,7 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Surface
 import com.smarthospital.tv.feedback.screens.FeedbackDirectScreen
 import com.smarthospital.tv.feedback.screens.MainNavRailScreen
+import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
 import com.smarthospital.tv.myhealth.screens.HospitalDashboardScreen
 import com.smarthospital.tv.myhealth.screens.VitalDetailScreen
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
@@ -37,20 +38,29 @@ class MainActivity : ComponentActivity() {
                         composable("dashboard") {
                             HospitalDashboardScreen(
                                 viewModel = viewModel,
-                                onVitalClick = { vitalName ->
-                                    navController.navigate("vital_detail/$vitalName")
+                                onVitalClick = { vital ->
+                                    navController.currentBackStackEntry?.savedStateHandle?.set("vital", vital)
+                                    navController.navigate("vital_detail")
+                                },
+                                onFeedbackClick = {
+                                    navController.navigate("feedback")
                                 }
                             )
                         }
                         composable(
-                            route = "vital_detail/{vitalName}",
-                            arguments = listOf(navArgument("vitalName") { type = androidx.navigation.NavType.StringType })
-                        ) { backStackEntry ->
-                            val vitalName = backStackEntry.arguments?.getString("vitalName") ?: ""
+                            route = "vital_detail"
+                        ) { _ ->
+                            val vital = navController.previousBackStackEntry?.savedStateHandle?.get<HospitalDataModel.Vital>("vital")
                             VitalDetailScreen(
-                                vitalName = vitalName,
-                                viewModel = viewModel,
+                                vital = vital,
                                 onBackClick = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                        composable("feedback") {
+                            FeedbackDirectScreen(
+                                onFeedbackComplete = {
                                     navController.popBackStack()
                                 }
                             )
