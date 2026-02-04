@@ -36,7 +36,9 @@ fun HospitalDashboardScreen(
     viewModel: HospitalDashboardViewModel = viewModel(),
     dashboardMode: DashboardMode = DashboardMode.INPATIENT_WARD,
     onVitalClick: (HospitalDataModel.Vital) -> Unit = {},
-    onFeedbackClick: () -> Unit = {}
+    onFeedbackClick: () -> Unit = {},
+    onInfoClick: (HospitalDataModel.GeneralInfo) -> Unit = {},
+    onScheduleClick: (HospitalDataModel.ScheduledActivity) -> Unit = {}
 ) {
     val uiState by viewModel.myHealthUiState.collectAsState()
     var hasUserDismissedFeedbackPopup by remember { mutableStateOf(false) }
@@ -56,7 +58,7 @@ fun HospitalDashboardScreen(
 
         is HospitalUiState.Success -> {
             val data = (uiState as HospitalUiState.Success).data
-            HospitalContent(data, dashboardMode, onVitalClick)
+            HospitalContent(data, dashboardMode, onVitalClick, onInfoClick, onScheduleClick)
         }
 
         is HospitalUiState.Error -> {
@@ -89,7 +91,9 @@ fun HospitalDashboardScreen(
 fun HospitalContent(
     data: HospitalDataModel,
     dashboardMode: DashboardMode,
-    onVitalClick: (HospitalDataModel.Vital) -> Unit = {}
+    onVitalClick: (HospitalDataModel.Vital) -> Unit = {},
+    onInfoClick: (HospitalDataModel.GeneralInfo) -> Unit = {},
+    onScheduleClick: (HospitalDataModel.ScheduledActivity) -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -124,7 +128,7 @@ fun HospitalContent(
                     GeneralInfoRow(
                         data = data.generalInfo!!,
                         focusRequester = focusRequester,
-                        onInfoClick = { /* Handle info click */ }
+                        onInfoClick = onInfoClick
                     )
                 }
             }
@@ -150,7 +154,10 @@ fun HospitalContent(
             }
             item {
                 HospitalDashboardItem(title = "Schedule Activities") {
-                    ScheduleRow(data.scheduledActivities!!)
+                    ScheduleRow(
+                        activities = data.scheduledActivities!!,
+                        onScheduleClick = onScheduleClick
+                    )
                 }
             }
             item {

@@ -12,11 +12,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.compose.runtime.collectAsState
 import androidx.tv.material3.Surface
 import com.smarthospital.tv.feedback.screens.FeedbackDirectScreen
-import com.smarthospital.tv.feedback.screens.MainNavRailScreen
-import com.smarthospital.tv.myhealth.datamodels.HospitalDataModel
 import com.smarthospital.tv.myhealth.screens.HospitalDashboardScreen
+import com.smarthospital.tv.myhealth.screens.PainRatingScreen
+import com.smarthospital.tv.myhealth.screens.ScheduleDetailsScreen
 import com.smarthospital.tv.myhealth.screens.VitalDetailScreen
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
 import com.smarthospital.tv.myhealth.viewmodels.HospitalDashboardViewModel
@@ -34,31 +35,90 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val viewModel: HospitalDashboardViewModel = viewModel()
 
-                    NavHost(navController = navController, startDestination = "dashboard") {
-                        composable("dashboard") {
+                    NavHost(navController = navController, startDestination = Routes.Dashboard.route) {
+                        composable(Routes.Dashboard.route) {
                             HospitalDashboardScreen(
                                 viewModel = viewModel,
                                 onVitalClick = { vital ->
-                                    navController.currentBackStackEntry?.savedStateHandle?.set("vital", vital)
-                                    navController.navigate("vital_detail")
+                                    viewModel.selectVital(vital)
+                                    navController.navigate(Routes.VitalDetail.route)
                                 },
                                 onFeedbackClick = {
-                                    navController.navigate("feedback")
+                                    navController.navigate(Routes.Feedback.route)
+                                },
+                                onInfoClick = { info ->
+                                    if (info.card != null) {
+                                        navController.navigate(
+                                            Routes.PainLevelDetails.buildRoute(
+                                                title = info.card.title,
+                                                description = info.card.description,
+                                                imageUrl = info.card.imageUrl
+                                            )
+                                        )
+                                    }
+                                },
+                                onScheduleClick = { activity ->
+                                    navController.navigate(
+                                        Routes.ScheduleDetails.buildRoute(
+                                            title = activity.title,
+                                            description = activity.description
+                                        )
+                                    )
                                 }
                             )
                         }
                         composable(
-                            route = "vital_detail"
-                        ) { _ ->
-                            val vital = navController.previousBackStackEntry?.savedStateHandle?.get<HospitalDataModel.Vital>("vital")
+                            route = Routes.VitalDetail.route
+                        ) {
+                            val vital = viewModel.selectedVital.collectAsState().value
                             VitalDetailScreen(
                                 vital = vital,
+                                onBackClick = {
+                                    navController.popBackStack()
+                                    viewModel.selectVital(null)
+                                }
+                            )
+                        }
+                        composable(
+                            route = Routes.PainLevelDetails.route,
+                            arguments = listOf(
+                                navArgument("title") { type = androidx.navigation.NavType.StringType },
+                                navArgument("description") { type = androidx.navigation.NavType.StringType },
+                                navArgument("imageUrl") { type = androidx.navigation.NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val title = backStackEntry.arguments?.getString("title")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: ""
+                            val description = backStackEntry.arguments?.getString("description")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: ""
+                            val imageUrl = backStackEntry.arguments?.getString("imageUrl")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: ""
+
+                            PainRatingScreen(
+                                imageUrl = imageUrl,
+                                title = title,
+                                description = description,
                                 onBackClick = {
                                     navController.popBackStack()
                                 }
                             )
                         }
-                        composable("feedback") {
+                        composable(
+                            route = Routes.ScheduleDetails.route,
+                            arguments = listOf(
+                                navArgument("title") { type = androidx.navigation.NavType.StringType },
+                                navArgument("description") { type = androidx.navigation.NavType.StringType }
+                            )
+                        ) { backStackEntry ->
+                            val title = backStackEntry.arguments?.getString("title")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: ""
+                            val description = backStackEntry.arguments?.getString("description")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: ""
+
+                            ScheduleDetailsScreen(
+                                title = title,
+                                description = description,
+                                onBackClick = {
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+                        composable(Routes.Feedback.route) {
                             FeedbackDirectScreen(
                                 onFeedbackComplete = {
                                     navController.popBackStack()

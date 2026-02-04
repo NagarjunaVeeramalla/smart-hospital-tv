@@ -22,12 +22,12 @@ data class HospitalDataModel(
         val cardTitle: String?,
         val cardDescription: String?,
         val measurements: List<Measurement>?
-    ) : java.io.Serializable
+    )
 
     data class Measurement(
         val captureDateTime: String,
         val values: List<Double>
-    ) : java.io.Serializable
+    )
 
     data class CareTeam(
         val hca34: String?,

@@ -18,7 +18,17 @@ class HospitalDashboardViewModel : ViewModel() {
     val myHealthUiState: StateFlow<HospitalUiState> =
         _myHealthUiState.asStateFlow()
 
-    fun getHospitalDashboardData() {
+    private val _selectedVital = MutableStateFlow<HospitalDataModel.Vital?>(null)
+    val selectedVital: StateFlow<HospitalDataModel.Vital?> = _selectedVital.asStateFlow()
+
+    fun selectVital(vital: HospitalDataModel.Vital?) {
+        _selectedVital.value = vital
+    }
+
+    fun getHospitalDashboardData(forceReload: Boolean = false) {
+        if (_myHealthUiState.value is HospitalUiState.Success && !forceReload) {
+            return
+        }
         viewModelScope.launch {
             _myHealthUiState.value = HospitalUiState.Loading
 

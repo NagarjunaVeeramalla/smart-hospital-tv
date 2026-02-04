@@ -1,6 +1,7 @@
 package com.smarthospital.tv.myhealth.screens
 
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Column
@@ -24,26 +25,32 @@ import com.smarthospital.tv.myhealth.ui.tvFocusDesign
 
 @Composable
 fun ScheduleRow(
-    activities: List<HospitalDataModel.ScheduledActivity>
+    activities: List<HospitalDataModel.ScheduledActivity>,
+    onScheduleClick: (HospitalDataModel.ScheduledActivity) -> Unit = {}
 ) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         items(activities.size) { index ->
-            ScheduleCard(activities[index])
+            ScheduleCard(
+                activity = activities[index],
+                onClick = { onScheduleClick(activities[index]) }
+            )
         }
     }
 }
 
 @Composable
 fun ScheduleCard(
-    activity: HospitalDataModel.ScheduledActivity
+    activity: HospitalDataModel.ScheduledActivity,
+    onClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
             .width(130.dp)
             .height(110.dp)
+            .clickable { onClick() }
             .tvFocusDesign(width = 130.dp)
             .padding(12.dp)
     ) {
