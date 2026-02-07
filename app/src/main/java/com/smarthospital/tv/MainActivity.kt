@@ -15,6 +15,7 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.compose.runtime.collectAsState
 import androidx.tv.material3.Surface
 import com.smarthospital.tv.feedback.screens.FeedbackDirectScreen
+import com.smarthospital.tv.home.screens.HomeComposable
 import com.smarthospital.tv.myhealth.screens.HospitalDashboardScreen
 import com.smarthospital.tv.myhealth.screens.PainRatingScreen
 import com.smarthospital.tv.myhealth.screens.ScheduleDetailsScreen
@@ -35,7 +36,14 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val viewModel: HospitalDashboardViewModel = viewModel()
 
-                    NavHost(navController = navController, startDestination = Routes.Dashboard.route) {
+                    NavHost(navController = navController, startDestination = Routes.Home.route) {
+                        composable(Routes.Home.route) {
+                             HomeComposable(
+                                 onMyHealthClick = {
+                                     navController.navigate(Routes.Dashboard.route)
+                                 }
+                             )
+                        }
                         composable(Routes.Dashboard.route) {
                             HospitalDashboardScreen(
                                 viewModel = viewModel,

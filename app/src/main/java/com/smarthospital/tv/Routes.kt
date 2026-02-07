@@ -1,6 +1,7 @@
 package com.smarthospital.tv
 
 sealed class Routes(val route: String) {
+    data object Home : Routes("home")
     data object Dashboard : Routes("dashboard")
     data object VitalDetail : Routes("vital_detail")
     data object Feedback : Routes("feedback")
