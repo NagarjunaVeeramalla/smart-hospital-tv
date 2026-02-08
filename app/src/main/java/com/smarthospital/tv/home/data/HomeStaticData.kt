@@ -19,9 +19,9 @@ object HomeStaticData {
         location = LocationModel(
             bed = "A",
             coid = "14203",
-            displayName = "Praneeth",
+            displayName = "Room 104",
             id = "",
-            room = "Praneeth",
+            room = "Room 104",
             type = "",
             unit = "664"
         ),
@@ -29,14 +29,14 @@ object HomeStaticData {
             backgroundImageUrl = "https://yavuzceliker.github.io/sample-images/image-1022.jpg"
         ),
         medicalRecordNumber = "MOCK20260119040732",
-        name = "JANE DOE",
-        preferredName = "Jane",
+        name = "NIKHIL",
+        preferredName = "Nikhil",
         preferredLanguage = "English",
         careTeam = listOf(
             CareTeam(
                 assignmentType = "Location",
                 clinicalRole = "CTA.ClinicalRoles.RegisteredNurse",
-                firstName = "Lindsay",
+                firstName = "Lakshmi",
                 lastName = "T.",
                 hca34 = "CORPGENRAUL1",
                 slot = "CTA.ClinicalRoles.RN.PCT"
@@ -44,7 +44,7 @@ object HomeStaticData {
             CareTeam(
                 assignmentType = "Location",
                 clinicalRole = "CTA.ClinicalRoles.RegisteredNurse",
-                firstName = "Amy",
+                firstName = "Anusha",
                 lastName = "J.",
                 hca34 = "CORPGENRAUL2",
                 slot = "CTA.ClinicalRoles.RN.CRN"
@@ -52,7 +52,7 @@ object HomeStaticData {
             CareTeam(
                 assignmentType = "Location",
                 clinicalRole = "CTA.ClinicalRoles.RegisteredNurse",
-                firstName = "Alex",
+                firstName = "Amit",
                 lastName = "P.",
                 hca34 = "CORPGENRAUL3",
                 slot = "CTA.ClinicalRoles.RN.1N"
@@ -99,7 +99,7 @@ object HomeStaticData {
             ScheduledActivityGroup("Imaging", "0/0")
         ),
         careTeamEDMembers = listOf(
-            CareTeamED("Alex", "P.", "Nurse")
+            CareTeamED("Amit", "P.", "Nurse")
         ),
         showVisitMyHealth = false,
         healthNotificationCount = 2

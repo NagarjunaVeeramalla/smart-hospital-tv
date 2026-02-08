@@ -109,16 +109,16 @@ fun CareTeamRowPreview() {
         CareTeamRow(
             members = listOf(
                 HospitalDataModel.CareTeam(
-                    firstName = "John",
-                    lastName = "Doe",
+                    firstName = "Rajesh",
+                    lastName = "Kumar",
                     clinicalRole = "Primary Physician",
                     hca34 = "Top Rated",
                     slot = "",
                     assignmentType = ""
                 ),
                 HospitalDataModel.CareTeam(
-                    firstName = "Jane",
-                    lastName = "Smith",
+                    firstName = "Priya",
+                    lastName = "Sharma",
                     clinicalRole = "Registered Nurse",
                     hca34 = "Friendly",
                     slot = "",

@@ -3,6 +3,8 @@
 
 # Smart Hospital TV App
 
+![Smart Hospital TV Dashboard](screenshots/dashboard_screenshot.png)
+
 ## Overview
 
 Smart Hospital TV App is an Android TV–based healthcare solution designed to enhance the in-room patient experience. It provides real-time health statistics, educational content, entertainment access, and comfort features through an easy-to-use bottom navigation interface.
