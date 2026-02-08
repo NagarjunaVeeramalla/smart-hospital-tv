@@ -3,7 +3,9 @@
 
 # Smart Hospital TV App
 
-![Smart Hospital TV Dashboard](screenshots/dashboard_screenshot.png)
+|                     Dashboard                      |                    Health                     |                     Education                      |
+|:--------------------------------------------------:|:---------------------------------------------:|:--------------------------------------------------:|
+| ![Dashboard](screenshots/dashboard_screenshot.png) | ![Health](screenshots/dashboard_myhealth.png) | ![Education](screenshots/dashboard_screenshot.png) |
 
 ## Overview
 
