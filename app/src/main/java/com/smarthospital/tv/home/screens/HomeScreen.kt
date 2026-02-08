@@ -1,18 +1,23 @@
 package com.smarthospital.tv.home.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -21,30 +26,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.tv.material3.Button
-import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.smarthospital.tv.R
+import com.smarthospital.tv.home.data.HomeStaticData
+import com.smarthospital.tv.home.data.models.PatientResponseModel
+import com.smarthospital.tv.home.viewmodels.HomeMenuItem
 import com.smarthospital.tv.home.viewmodels.HomeUiState
 import com.smarthospital.tv.home.viewmodels.HomeViewModel
-import com.smarthospital.tv.home.data.models.PatientResponseModel
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -73,8 +76,12 @@ fun HomeComposable(
             }
 
             is HomeUiState.Success -> {
-                val data = (uiState as HomeUiState.Success).patientData
-                HomeContent(data, onMyHealthClick)
+                val state = uiState as HomeUiState.Success
+                HomeContent(
+                    data = state.patientData,
+                    menuItems = state.menuItems,
+                    onMyHealthClick = onMyHealthClick
+                )
             }
         }
     }
@@ -83,16 +90,29 @@ fun HomeComposable(
 @Composable
 fun HomeContent(
     data: PatientResponseModel,
+    menuItems: List<HomeMenuItem>,
     onMyHealthClick: () -> Unit
 ) {
-    var focusedItem by remember { mutableStateOf("My Health") }
+    var focusedItem by remember { mutableStateOf("My Care") }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         // Background Image
+        val context = LocalContext.current
+        
         AsyncImage(
-            model = R.drawable.home_screen_bg,
+            model = ImageRequest.Builder(context)
+                .data(data.config.backgroundImageUrl)
+                .listener(
+                    onStart = { println("Coil: Starting image load for ${data.config.backgroundImageUrl}") },
+                    onSuccess = { _, _ -> println("Coil: Image loaded successfully") },
+                    onError = { _, result -> println("Coil: Image load failed: ${result.throwable.message}") ; result.throwable.printStackTrace() }
+                )
+                .placeholder(R.drawable.home_screen_bg)
+                .error(R.drawable.home_screen_bg)
+                .crossfade(true)
+                .build(),
             contentDescription = "Background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
@@ -129,29 +149,46 @@ fun HomeContent(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     when (focusedItem) {
-                        "My Health" -> {
+                        "My Care" -> {
                             data.scheduledActivityGroupCounts?.forEach { group ->
                                 InfoItem(label = group.groupName, value = group.orderCountRatio)
                             }
                         }
-                        "Education" -> {
+
+                        "Learning" -> {
                             val remaining = data.assignedVideosCount
                             InfoItem(label = "Suggested videos", value = "$remaining Remaining")
-                            InfoItem(label = "Availability", value = if (remaining > 0) "All available on your TV" else "Watch again")
+                            InfoItem(
+                                label = "Availability",
+                                value = if (remaining > 0) "All available on your TV" else "Watch again"
+                            )
                         }
-                        "Help & Feedback" -> {
+
+                        "Support" -> {
                             // Using a hardcoded help message for now or one from config if available
-                            val helpMsg = "Contact Support at 1-800-HOSPITAL" 
+                            val helpMsg = "Contact Support at 1-800-HOSPITAL"
                             InfoItem(label = "Help", value = helpMsg)
                         }
+
                         "Entertainment" -> {
-                            InfoItem(label = "Entertainment", value = "Watch movies, TV shows, and more.")
+                            InfoItem(
+                                label = "Entertainment",
+                                value = "Watch movies, TV shows, and more."
+                            )
                         }
-                        "Display Device" -> {
-                            InfoItem(label = "Display Device", value = "Manage your TV settings and connected devices.")
+
+                        "TV Settings" -> {
+                            InfoItem(
+                                label = "TV Settings",
+                                value = "Manage your TV settings and connected devices."
+                            )
                         }
-                        "Comforts" -> {
-                            InfoItem(label = "Comforts", value = "Adjust lighting, temperature, and room services.")
+
+                        "Room Control" -> {
+                            InfoItem(
+                                label = "Room Control",
+                                value = "Adjust lighting, temperature, and room services."
+                            )
                         }
                     }
                 }
@@ -196,16 +233,16 @@ fun HomeContent(
 
                         // Room
                         if (!data.location?.displayName.isNullOrEmpty()) {
-                            CareTeamItem(role = "Room", name = data.location?.displayName ?: "")
+                            CareTeamItem(role = "Room", name = data.location.displayName)
                         }
                     }
                 }
             }
 
             // Bottom Menu (Aligned to bottom by parent Column)
+            // Bottom Menu (Aligned to bottom by parent Column)
             BottomMenu(
-                healthNotificationCount = data.healthNotificationCount,
-                assignedVideosCount = data.assignedVideosCount,
+                menuItems = menuItems,
                 onMyHealthClick = onMyHealthClick,
                 onFocusChange = { focusedItem = it }
             )
@@ -277,20 +314,10 @@ fun CareTeamItem(role: String, name: String) {
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun BottomMenu(
-    healthNotificationCount: Int,
-    assignedVideosCount: Int,
+    menuItems: List<HomeMenuItem>,
     onMyHealthClick: () -> Unit,
     onFocusChange: (String) -> Unit
 ) {
-    val menuItems = listOf(
-        "My Health",
-        "Entertainment",
-        "Display Device",
-        "Education",
-        "Comforts",
-        "Help & Feedback",
-    )
-
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -306,29 +333,21 @@ fun BottomMenu(
         verticalAlignment = Alignment.CenterVertically
     ) {
         menuItems.forEachIndexed { index, item ->
-            val isMyHealth = item == "My Health"
-            val isEducation = item == "Education"
+            val isMyCare = item.displayName == "My Care"
 
-            val badgeCount = when {
-                isMyHealth -> healthNotificationCount
-                isEducation -> assignedVideosCount
-                else -> 0
-            }
-
-            key(item) {
+            key(item.id) {
                 BottomMenuItem(
-                    text = item,
-                    isSelected = false,
-                    hasBadge = badgeCount > 0,
-                    badgeCount = badgeCount,
+                    text = item.displayName,
+                    hasBadge = item.badgeCount > 0,
+                    badgeCount = item.badgeCount,
                     onClick = {
-                        if (isMyHealth) {
+                        if (isMyCare) {
                             onMyHealthClick()
                         }
                         // Handle other clicks if needed
                     },
                     modifier = if (index == 0) Modifier.focusRequester(focusRequester) else Modifier,
-                    onFocus = { onFocusChange(item) }
+                    onFocus = { onFocusChange(item.displayName) }
                 )
             }
         }
@@ -338,39 +357,36 @@ fun BottomMenu(
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun BottomMenuItem(
+    modifier: Modifier = Modifier,
     text: String,
-    isSelected: Boolean,
     hasBadge: Boolean = false,
     badgeCount: Int = 0,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     onFocus: () -> Unit
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
-    Button(
-        onClick = onClick,
+    Box(
         modifier = modifier
-            .onFocusChanged { 
-                isFocused = it.isFocused
-                if (isFocused) onFocus()
-            },
-        colors = ButtonDefaults.colors(
-            containerColor = Color.Transparent,
-            contentColor = Color.White.copy(alpha = 0.8f),
-            focusedContainerColor = Color.White,
-            focusedContentColor = Color.Black
-        ),
-        shape = ButtonDefaults.shape(shape = RoundedCornerShape(50)),
-        contentPadding = PaddingValues(0.dp)
+            .bottomMenuItemFocus(
+                isFocused = isFocused,
+                onFocusChange = {
+                    isFocused = it
+                    if (it) onFocus()
+                },
+                onClick = onClick
+            )
+            .padding(horizontal = 4.dp, vertical = 3.dp),
+        contentAlignment = Alignment.Center
     ) {
         Box(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 0.dp)
+             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
             Text(
                 text = text,
                 fontWeight = if (isFocused) FontWeight.Bold else FontWeight.Medium,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = if (isFocused) Color.Black else Color.White.copy(alpha = 0.8f)
             )
 
             if (hasBadge) {
@@ -381,22 +397,52 @@ fun BottomMenuItem(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .offset(x = 4.dp, y = (-7).dp)
+                        .offset(x = 12.dp, y = (-8).dp)
                         .background(Color.Red, shape = CircleShape)
-                        .padding(horizontal = 2.dp, vertical = 1.dp)
+                        .padding(horizontal = 4.dp, vertical = 1.dp)
                 )
             }
         }
     }
 }
 
+private fun Modifier.bottomMenuItemFocus(
+    isFocused: Boolean,
+    onFocusChange: (Boolean) -> Unit,
+    onClick: () -> Unit
+): Modifier = composed {
+    this
+        .onFocusChanged { onFocusChange(it.isFocused || it.hasFocus) }
+        .focusable()
+        .clickable(
+            interactionSource = remember { MutableInteractionSource() },
+            indication = null,
+            onClick = onClick
+        )
+        .background(
+            color = if (isFocused) Color.White else Color.Transparent,
+            shape = RoundedCornerShape(50)
+        )
+}
+
+
 
 @Preview(device = "id:tv_1080p")
 @Composable
 fun HomeScreenPreview() {
+    val mockMenuItems = listOf(
+        HomeMenuItem(id = "My Health", displayName = "My Care", badgeCount = 2),
+        HomeMenuItem(id = "Entertainment", displayName = "Entertainment"),
+        HomeMenuItem(id = "Display Device", displayName = "TV Settings"),
+        HomeMenuItem(id = "Education", displayName = "Learning", badgeCount = 10),
+        HomeMenuItem(id = "Comforts", displayName = "Room Control"),
+        HomeMenuItem(id = "Help & Feedback", displayName = "Support")
+    )
+
     SmartHospitalAppTheme {
         HomeContent(
-            data = com.smarthospital.tv.home.data.HomeStaticData.patientData,
+            data = HomeStaticData.patientData,
+            menuItems = mockMenuItems,
             onMyHealthClick = {}
         )
     }

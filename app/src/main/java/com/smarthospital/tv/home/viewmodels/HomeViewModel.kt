@@ -17,9 +17,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+data class HomeMenuItem(
+    val id: String,
+    val displayName: String,
+    val badgeCount: Int = 0
+)
+
 sealed interface HomeUiState {
     data object Loading : HomeUiState
-    data class Success(val patientData: PatientResponseModel) : HomeUiState
+    data class Success(
+        val patientData: PatientResponseModel,
+        val menuItems: List<HomeMenuItem>
+    ) : HomeUiState
     data class Error(val message: String) : HomeUiState
 }
 
@@ -39,7 +48,37 @@ class HomeViewModel : ViewModel() {
 
             val mockData = HomeStaticData.patientData
             
-            _uiState.value = HomeUiState.Success(mockData)
+            // Map legacy items to new display names and add badges
+            val menuItems = listOf(
+                HomeMenuItem(
+                    id = "My Health",
+                    displayName = "My Care",
+                    badgeCount = mockData.healthNotificationCount
+                ),
+                HomeMenuItem(
+                    id = "Entertainment",
+                    displayName = "Entertainment"
+                ),
+                HomeMenuItem(
+                    id = "Display Device",
+                    displayName = "TV Settings"
+                ),
+                HomeMenuItem(
+                    id = "Education",
+                    displayName = "Learning",
+                    badgeCount = mockData.assignedVideosCount
+                ),
+                HomeMenuItem(
+                    id = "Comforts",
+                    displayName = "Room Control"
+                ),
+                HomeMenuItem(
+                    id = "Help & Feedback",
+                    displayName = "Support"
+                )
+            )
+
+            _uiState.value = HomeUiState.Success(mockData, menuItems)
         }
     }
 }
