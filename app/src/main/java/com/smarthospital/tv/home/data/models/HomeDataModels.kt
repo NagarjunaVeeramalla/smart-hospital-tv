@@ -137,5 +137,7 @@ data class ScheduledActivity(
 
 data class Config(
     val backgroundImageUrl: String? = null,
-    val menuItems: List<String> = emptyList()
+    val menuItems: List<String> = emptyList(),
+    val overlayUrl: String? = null,
+    val overlayVideoId: String? = null
 )

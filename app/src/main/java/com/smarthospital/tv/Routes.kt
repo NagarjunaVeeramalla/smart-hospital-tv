@@ -4,7 +4,9 @@ sealed class Routes(val route: String) {
     data object Home : Routes("home")
     data object Dashboard : Routes("dashboard")
     data object VitalDetail : Routes("vital_detail")
-    data object Feedback : Routes("feedback")
+    data object FeedbackDirectScreen : Routes("feedback")
+
+    data object FeedbackMainScreen : Routes("main_nav_rail")
     data object PainLevelDetails : Routes("pain_level_details/{title}/{description}/{imageUrl}") {
         fun buildRoute(title: String, description: String, imageUrl: String): String {
             val encodedTitle = java.net.URLEncoder.encode(title, "UTF-8")

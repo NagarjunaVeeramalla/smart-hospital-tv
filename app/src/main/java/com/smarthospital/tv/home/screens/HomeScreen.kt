@@ -48,6 +48,7 @@ import com.smarthospital.tv.home.data.models.PatientResponseModel
 import com.smarthospital.tv.home.viewmodels.HomeMenuItem
 import com.smarthospital.tv.home.viewmodels.HomeUiState
 import com.smarthospital.tv.home.viewmodels.HomeViewModel
+import com.smarthospital.tv.home.viewmodels.AppBottomMenu
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -56,7 +57,7 @@ import java.util.Locale
 @Composable
 fun HomeComposable(
     viewModel: HomeViewModel = viewModel(),
-    onMyHealthClick: () -> Unit
+    onMenuItemClick: (HomeMenuItem) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -77,11 +78,35 @@ fun HomeComposable(
 
             is HomeUiState.Success -> {
                 val state = uiState as HomeUiState.Success
+                val showIntroPopup by viewModel.showIntroPopup.collectAsState()
+                val showWatchLaterPopup by viewModel.showWatchLaterPopup.collectAsState()
+                val isPopupVisible = showIntroPopup || showWatchLaterPopup
+
                 HomeContent(
                     data = state.patientData,
                     menuItems = state.menuItems,
-                    onMyHealthClick = onMyHealthClick
+                    onMenuItemClick = onMenuItemClick,
+                    isContentEnabled = !isPopupVisible
                 )
+
+                val introVideo by viewModel.introVideo.collectAsState()
+
+                if (showIntroPopup && introVideo != null) {
+                    AppIntroVideoPopUp(
+                        onPlayClick = viewModel::onIntroPlayClicked,
+                        imageRes = introVideo!!.thumbnailurl,
+                        title = introVideo!!.title,
+                        videoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+                        onWatchLaterClicked = viewModel::onIntroWatchLaterClicked,
+                        onVideoFinished = viewModel::onIntroVideoFinished
+                    )
+                }
+
+                if (showWatchLaterPopup) {
+                    WatchLaterPopup(
+                        onOkayClicked = viewModel::onWatchLaterOkayClicked
+                    )
+                }
             }
         }
     }
@@ -91,9 +116,10 @@ fun HomeComposable(
 fun HomeContent(
     data: PatientResponseModel,
     menuItems: List<HomeMenuItem>,
-    onMyHealthClick: () -> Unit
+    onMenuItemClick: (HomeMenuItem) -> Unit,
+    isContentEnabled: Boolean = true
 ) {
-    var focusedItem by remember { mutableStateOf("My Care") }
+    var focusedItem by remember { mutableStateOf(AppBottomMenu.MyCare) }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -149,13 +175,13 @@ fun HomeContent(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     when (focusedItem) {
-                        "My Care" -> {
+                        AppBottomMenu.MyCare -> {
                             data.scheduledActivityGroupCounts?.forEach { group ->
                                 InfoItem(label = group.groupName, value = group.orderCountRatio)
                             }
                         }
 
-                        "Learning" -> {
+                        AppBottomMenu.Learning -> {
                             val remaining = data.assignedVideosCount
                             InfoItem(label = "Suggested videos", value = "$remaining Remaining")
                             InfoItem(
@@ -164,27 +190,27 @@ fun HomeContent(
                             )
                         }
 
-                        "Support" -> {
+                        AppBottomMenu.Support -> {
                             // Using a hardcoded help message for now or one from config if available
                             val helpMsg = "Contact Support at 1-800-HOSPITAL"
                             InfoItem(label = "Help", value = helpMsg)
                         }
 
-                        "Entertainment" -> {
+                        AppBottomMenu.Entertainment -> {
                             InfoItem(
                                 label = "Entertainment",
                                 value = "Watch movies, TV shows, and more."
                             )
                         }
 
-                        "TV Settings" -> {
+                        AppBottomMenu.TvSettings -> {
                             InfoItem(
                                 label = "TV Settings",
                                 value = "Manage your TV settings and connected devices."
                             )
                         }
 
-                        "Room Control" -> {
+                        AppBottomMenu.RoomControl -> {
                             InfoItem(
                                 label = "Room Control",
                                 value = "Adjust lighting, temperature, and room services."
@@ -243,8 +269,9 @@ fun HomeContent(
             // Bottom Menu (Aligned to bottom by parent Column)
             BottomMenu(
                 menuItems = menuItems,
-                onMyHealthClick = onMyHealthClick,
-                onFocusChange = { focusedItem = it }
+                onMenuItemClick = onMenuItemClick,
+                onFocusChange = { focusedItem = it },
+                isEnabled = isContentEnabled
             )
         }
     }
@@ -315,13 +342,16 @@ fun CareTeamItem(role: String, name: String) {
 @Composable
 fun BottomMenu(
     menuItems: List<HomeMenuItem>,
-    onMyHealthClick: () -> Unit,
-    onFocusChange: (String) -> Unit
+    onMenuItemClick: (HomeMenuItem) -> Unit,
+    onFocusChange: (AppBottomMenu) -> Unit,
+    isEnabled: Boolean = true
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+    LaunchedEffect(isEnabled) {
+        if (isEnabled) {
+            focusRequester.requestFocus()
+        }
     }
 
     Row(
@@ -333,21 +363,17 @@ fun BottomMenu(
         verticalAlignment = Alignment.CenterVertically
     ) {
         menuItems.forEachIndexed { index, item ->
-            val isMyCare = item.displayName == "My Care"
-
             key(item.id) {
                 BottomMenuItem(
                     text = item.displayName,
                     hasBadge = item.badgeCount > 0,
                     badgeCount = item.badgeCount,
                     onClick = {
-                        if (isMyCare) {
-                            onMyHealthClick()
-                        }
-                        // Handle other clicks if needed
+                        onMenuItemClick(item)
                     },
                     modifier = if (index == 0) Modifier.focusRequester(focusRequester) else Modifier,
-                    onFocus = { onFocusChange(item.displayName) }
+                    onFocus = { onFocusChange(item.type) },
+                    isEnabled = isEnabled
                 )
             }
         }
@@ -362,9 +388,16 @@ fun BottomMenuItem(
     hasBadge: Boolean = false,
     badgeCount: Int = 0,
     onClick: () -> Unit,
-    onFocus: () -> Unit
+    onFocus: () -> Unit,
+    isEnabled: Boolean = true
 ) {
     var isFocused by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isEnabled) {
+        if (!isEnabled) {
+            isFocused = false
+        }
+    }
 
     Box(
         modifier = modifier
@@ -374,7 +407,8 @@ fun BottomMenuItem(
                     isFocused = it
                     if (it) onFocus()
                 },
-                onClick = onClick
+                onClick = onClick,
+                enabled = isEnabled
             )
             .padding(horizontal = 4.dp, vertical = 3.dp),
         contentAlignment = Alignment.Center
@@ -409,20 +443,26 @@ fun BottomMenuItem(
 private fun Modifier.bottomMenuItemFocus(
     isFocused: Boolean,
     onFocusChange: (Boolean) -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    enabled: Boolean
 ): Modifier = composed {
-    this
-        .onFocusChanged { onFocusChange(it.isFocused || it.hasFocus) }
-        .focusable()
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = onClick
-        )
-        .background(
-            color = if (isFocused) Color.White else Color.Transparent,
-            shape = RoundedCornerShape(50)
-        )
+    val modifier = if (enabled) {
+        this
+            .onFocusChanged { onFocusChange(it.isFocused || it.hasFocus) }
+            .focusable()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+    } else {
+        this
+    }
+
+    modifier.background(
+        color = if (isFocused && enabled) Color.White else Color.Transparent,
+        shape = RoundedCornerShape(50)
+    )
 }
 
 
@@ -431,19 +471,19 @@ private fun Modifier.bottomMenuItemFocus(
 @Composable
 fun HomeScreenPreview() {
     val mockMenuItems = listOf(
-        HomeMenuItem(id = "My Health", displayName = "My Care", badgeCount = 2),
-        HomeMenuItem(id = "Entertainment", displayName = "Entertainment"),
-        HomeMenuItem(id = "Display Device", displayName = "TV Settings"),
-        HomeMenuItem(id = "Education", displayName = "Learning", badgeCount = 10),
-        HomeMenuItem(id = "Comforts", displayName = "Room Control"),
-        HomeMenuItem(id = "Help & Feedback", displayName = "Support")
+        HomeMenuItem(type = AppBottomMenu.MyCare, badgeCount = 2),
+        HomeMenuItem(type = AppBottomMenu.Entertainment),
+        HomeMenuItem(type = AppBottomMenu.TvSettings),
+        HomeMenuItem(type = AppBottomMenu.Learning, badgeCount = 10),
+        HomeMenuItem(type = AppBottomMenu.RoomControl),
+        HomeMenuItem(type = AppBottomMenu.Support)
     )
 
     SmartHospitalAppTheme {
         HomeContent(
             data = HomeStaticData.patientData,
             menuItems = mockMenuItems,
-            onMyHealthClick = {}
+            onMenuItemClick = {}
         )
     }
 }

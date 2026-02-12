@@ -26,7 +26,9 @@ object HomeStaticData {
             unit = "664"
         ),
         config = Config(
-            backgroundImageUrl = "https://yavuzceliker.github.io/sample-images/image-1022.jpg"
+            backgroundImageUrl = "https://yavuzceliker.github.io/sample-images/image-1022.jpg",
+            overlayUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/",
+            overlayVideoId = "fac3b1cb-d9af-4f1e-9d3c-aed8934cf9cd" // Matches the patient video ID below
         ),
         medicalRecordNumber = "MOCK20260119040732",
         name = "NIKHIL",
@@ -84,8 +86,8 @@ object HomeStaticData {
                 id = "fac3b1cb-d9af-4f1e-9d3c-aed8934cf9cd",
                 fullAccountNumber = "14203-MOCK20260119040732",
                 videoId = "fac3b1cb-d9af-4f1e-9d3c-aed8934cf9cd",
-                title = "Hospital Overview",
-                thumbnailurl = "https://vision-dev.hcahealthcare.cloud/v2/assets/education/images/TriStarHendersonville_HospitalOverview.jpg",
+                title = "Welcome to Smart Hospital to Your Room",
+                thumbnailurl = "https://yavuzceliker.github.io/sample-images/image-1022.jpg",
                 length = 135000,
                 progress = 0,
                 category = "Additional",

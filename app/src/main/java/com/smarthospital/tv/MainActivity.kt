@@ -1,3 +1,4 @@
+
 package com.smarthospital.tv
 
 import android.os.Bundle
@@ -13,8 +14,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.compose.runtime.collectAsState
+import androidx.navigation.NavType
 import androidx.tv.material3.Surface
 import com.smarthospital.tv.feedback.screens.FeedbackDirectScreen
+import com.smarthospital.tv.feedback.screens.MainNavRailScreen
 import com.smarthospital.tv.home.screens.HomeComposable
 import com.smarthospital.tv.myhealth.screens.HospitalDashboardScreen
 import com.smarthospital.tv.myhealth.screens.PainRatingScreen
@@ -22,6 +25,7 @@ import com.smarthospital.tv.myhealth.screens.ScheduleDetailsScreen
 import com.smarthospital.tv.myhealth.screens.VitalDetailScreen
 import com.smarthospital.tv.myhealth.ui.theme.SmartHospitalAppTheme
 import com.smarthospital.tv.myhealth.viewmodels.HospitalDashboardViewModel
+import com.smarthospital.tv.home.viewmodels.AppBottomMenu
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalTvMaterial3Api::class)
@@ -39,8 +43,12 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = Routes.Home.route) {
                         composable(Routes.Home.route) {
                              HomeComposable(
-                                 onMyHealthClick = {
-                                     navController.navigate(Routes.Dashboard.route)
+                                 onMenuItemClick = { item ->
+                                     if (item.type == AppBottomMenu.MyCare) {
+                                         navController.navigate(Routes.Dashboard.route)
+                                     } else if (item.type == AppBottomMenu.Support) {
+                                         navController.navigate(Routes.FeedbackMainScreen.route)
+                                     }
                                  }
                              )
                         }
@@ -52,7 +60,7 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(Routes.VitalDetail.route)
                                 },
                                 onFeedbackClick = {
-                                    navController.navigate(Routes.Feedback.route)
+                                    navController.navigate(Routes.FeedbackDirectScreen.route)
                                 },
                                 onInfoClick = { info ->
                                     if (info.card != null) {
@@ -90,9 +98,9 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Routes.PainLevelDetails.route,
                             arguments = listOf(
-                                navArgument("title") { type = androidx.navigation.NavType.StringType },
-                                navArgument("description") { type = androidx.navigation.NavType.StringType },
-                                navArgument("imageUrl") { type = androidx.navigation.NavType.StringType }
+                                navArgument("title") { type = NavType.StringType },
+                                navArgument("description") { type = NavType.StringType },
+                                navArgument("imageUrl") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
                             val title = backStackEntry.arguments?.getString("title")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: ""
@@ -111,8 +119,8 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Routes.ScheduleDetails.route,
                             arguments = listOf(
-                                navArgument("title") { type = androidx.navigation.NavType.StringType },
-                                navArgument("description") { type = androidx.navigation.NavType.StringType }
+                                navArgument("title") { type = NavType.StringType },
+                                navArgument("description") { type = NavType.StringType }
                             )
                         ) { backStackEntry ->
                             val title = backStackEntry.arguments?.getString("title")?.let { java.net.URLDecoder.decode(it, "UTF-8") } ?: ""
@@ -126,12 +134,16 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        composable(Routes.Feedback.route) {
+                        composable(Routes.FeedbackDirectScreen.route) {
                             FeedbackDirectScreen(
                                 onFeedbackComplete = {
                                     navController.popBackStack()
                                 }
                             )
+                        }
+
+                        composable(Routes.FeedbackMainScreen.route) {
+                            MainNavRailScreen()
                         }
                     }
                 }
